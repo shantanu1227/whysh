@@ -21,7 +21,7 @@ export default function BottomTabNavigator({ navigation, route }) {
   navigation.setOptions({ headerTitle: getHeaderTitle(route) });
 
     return (
-        <Drawer.Navigator drawerType='front' initialRouteName={INITIAL_ROUTE_NAME}>
+      <Drawer.Navigator drawerType='front' initialRouteName={INITIAL_ROUTE_NAME}>
             <Drawer.Screen
                 name={HOME}
         component={HomeScreen}
