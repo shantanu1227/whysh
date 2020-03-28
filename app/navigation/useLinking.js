@@ -9,11 +9,11 @@ export default function(containerRef) {
       Root: {
         path: 'root',
         screens: {
-            [HOME]: routeNames[HOME].url,
-            [LOGIN]: routeNames[LOGIN].url,
+          [HOME]: routeNames[HOME].url,
+          [LOGIN]: routeNames[LOGIN].url,
           Links: 'links',
           Settings: 'settings',
-            [VOLUNTEER_TASKS]: routeNames[VOLUNTEER_TASKS].url
+          [VOLUNTEER_TASKS]: routeNames[VOLUNTEER_TASKS].url
         },
       },
     },
