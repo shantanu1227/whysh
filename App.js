@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import BottomTabNavigator from './app/navigation/BottomTabNavigator';
 import useLinking from './app/navigation/useLinking';
+import VolunteerTasks from "./app/screens/VolunteerTasks";
 
 const instructions = Platform.select({
   ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
