@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/LoginScreen';
+import HomeScreen from "../screens/HomeScreen";
+import LoginScreen from "../screens/LoginScreen";
 
 const BottomTab = createBottomTabNavigator();
 const INITIAL_ROUTE_NAME = 'Home';
@@ -22,6 +23,14 @@ export default function BottomTabNavigator({ navigation, route }) {
           tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
         }}
       />
+        <BottomTab.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{
+                title: 'Login',
+                tabBarIcon: ({ focused }) => <TabBarIcon focused={focused} name="md-code-working" />,
+            }}
+        />
       <BottomTab.Screen
         name="Links"
         component={HomeScreen}
@@ -39,7 +48,9 @@ function getHeaderTitle(route) {
 
   switch (routeName) {
     case 'Home':
-      return 'How to get started';
+      return 'Home';
+      case 'Login':
+          return 'Login';
     case 'Links':
       return 'Links to learn more';
   }
