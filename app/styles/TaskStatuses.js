@@ -13,5 +13,8 @@ export const statuses = StyleSheet.create({
   },
   pending: {
     backgroundColor: '#6B6B67'
+  },
+  cancelled: {
+    backgroundColor: '#C0392B'
   }
 });

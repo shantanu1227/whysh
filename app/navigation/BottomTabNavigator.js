@@ -3,6 +3,7 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 import HomeScreen from "../screens/HomeScreen";
 import LoginScreen from "../screens/LoginScreen";
 import {
+  ASSIGNED_TASKS, CREATED_TASKS,
   HOME,
   LOGIN,
   routeNames,
@@ -10,6 +11,8 @@ import {
 } from "../constants/Routes";
 import CustomIcon from "../components/TabBarIcon";
 import VolunteerTasks from "../screens/VolunteerTasks";
+import AssignedTasks from "../screens/AssignedTasks";
+import CreatedTasks from "../screens/CreatedTasks";
 
 const Drawer = createDrawerNavigator();
 const INITIAL_ROUTE_NAME = HOME;
@@ -46,14 +49,22 @@ export default function BottomTabNavigator({ navigation, route }) {
           drawerIcon: ({focused}) => <CustomIcon focused={focused} name="ios-list"/>,
         }}
       />
-      {/*<Drawer.Screen
-        name="Links"
-        component={HomeScreen}
+      <Drawer.Screen
+        name={ASSIGNED_TASKS}
+        component={AssignedTasks}
         options={{
-          title: 'Resources',
-          drawerIcon: ({focused}) => <CustomIcon focused={focused} name="md-book"/>,
+          title: routeNames[ASSIGNED_TASKS].title,
+          drawerIcon: ({focused}) => <CustomIcon focused={focused} name="ios-list"/>,
         }}
-      />*/}
+      />
+      <Drawer.Screen
+        name={CREATED_TASKS}
+        component={CreatedTasks}
+        options={{
+          title: routeNames[CREATED_TASKS].title,
+          drawerIcon: ({focused}) => <CustomIcon focused={focused} name="ios-list"/>,
+        }}
+      />
     </Drawer.Navigator>
   );
 }
