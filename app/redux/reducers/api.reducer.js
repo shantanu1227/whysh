@@ -1,7 +1,10 @@
-import {GET_PENDING_TASKS_FOR_PINCODE} from "../types";
+import {GET_ASSIGNED_TASKS, GET_CREATED_TASKS, GET_PENDING_TASKS_FOR_PINCODE, TAKE_ACTION_ON_TASK} from "../types";
 
 const INITIAL_STATE = {
-  pendingTasksForPincode: {}
+  pendingTasksForPincode: {},
+  assignedTasks: {},
+  createdTasks: {},
+  actionTakenOnTask: {}
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -10,6 +13,12 @@ export default function (state = INITIAL_STATE, action) {
   switch (type) {
     case GET_PENDING_TASKS_FOR_PINCODE:
       return {...state, pendingTasksForPincode: payload};
+    case GET_ASSIGNED_TASKS:
+      return {...state, assignedTasks: payload};
+    case GET_CREATED_TASKS:
+      return {...state, createdTasks: payload};
+    case TAKE_ACTION_ON_TASK:
+      return {...state, actionTakenOnTask: payload};
 
     default:
       return state;
