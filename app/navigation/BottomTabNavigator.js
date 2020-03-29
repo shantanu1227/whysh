@@ -46,14 +46,14 @@ export default function BottomTabNavigator({ navigation, route }) {
           drawerIcon: ({focused}) => <CustomIcon focused={focused} name="ios-list"/>,
         }}
       />
-      <Drawer.Screen
+      {/*<Drawer.Screen
         name="Links"
         component={HomeScreen}
         options={{
           title: 'Resources',
           drawerIcon: ({focused}) => <CustomIcon focused={focused} name="md-book"/>,
         }}
-      />
+      />*/}
     </Drawer.Navigator>
   );
 }

@@ -5,12 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import BottomTabNavigator from './app/navigation/BottomTabNavigator';
 import useLinking from './app/navigation/useLinking';
-import VolunteerTasks from "./app/screens/VolunteerTasks";
-
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' + 'Shake or press menu button for dev menu',
-});
+import store from './app/redux/store';
+import {Provider} from 'react-redux';
 
 const Stack = createStackNavigator();
 
@@ -20,13 +16,15 @@ export default function App(props) {
   const containerRef = React.useRef();
   const { getInitialState } = useLinking(containerRef);
     return (
-      <View style={styles.container}>
-        <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
-          <Stack.Navigator>
-            <Stack.Screen name="Root" component={BottomTabNavigator} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </View>
+      <Provider store={store}>
+        <View style={styles.container}>
+          <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
+            <Stack.Navigator>
+              <Stack.Screen name="Root" component={BottomTabNavigator}/>
+            </Stack.Navigator>
+          </NavigationContainer>
+        </View>
+      </Provider>
     );
 }
 
