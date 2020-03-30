@@ -1,10 +1,80 @@
-import * as React from 'react';
-import LoginComponent from '../components/LoginComponent';
+import React, {useState} from 'react';
+import { ScrollView, TextInput, Button } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import * as firebase from 'firebase';
+import { signInWithPhoneNumber } from '../domain/phoneAuthentication';
+import {REGISTER_USER, VOLUNTEER_TASKS} from '../constants/Routes';
 
-export default function LoginScreen() {
-    return <LoginComponent />
+
+const LoginScreen = () => {
+    const navigation = useNavigation();
+    const country = '+91';
+    const [phone, setPhone] = useState('');
+    const [smsCode, setSmsCode] = useState('');
+    const [confirmSMSCode, setConfirmSMSCode] = useState();
+
+    const handleSendSMS = async () => {
+        signInWithPhoneNumber(`${country}${phone}`).then(confirmation => {
+            setConfirmSMSCode(() => confirmation);
+        });
+    };
+
+    const handleConfirmSMSCode = () => {
+        if (!confirmSMSCode || smsCode === '') {
+            return;
+        }
+        confirmSMSCode(smsCode);
+    };
+
+    const handleUser = (user) => {
+        if (user && !user.isAnonymous) {
+            if (user.displayName && user.displayName !== null) {
+                //logged in
+                navigation.navigate(VOLUNTEER_TASKS);
+                return;
+            } else if (user.displayName === null) {
+                //logged in but not registered
+                navigation.navigate(REGISTER_USER);
+                return;
+            }
+        }
+    }
+
+    if (firebase.auth().currentUser && !firebase.auth().currentUser.isAnonymous) {
+        return handleUser(firebase.auth().currentUser);
+    }
+   
+    firebase.auth().onAuthStateChanged(user => {
+        return handleUser(user);
+    });
+
+    if (!confirmSMSCode)
+        return (
+            <ScrollView style={{ padding: 20, marginTop: 20 }}>
+                <TextInput
+                    value={phone}
+                    onChangeText={setPhone}
+                    keyboardType="phone-pad"
+                    placeholder="Your phone"
+                />
+                <Button onPress={handleSendSMS} title="Next" />
+            </ScrollView>
+        );
+    else
+        return (
+            <ScrollView style={{ padding: 20, marginTop: 20 }}>
+                <TextInput
+                    value={smsCode}
+                    onChangeText={setSmsCode}
+                    keyboardType="numeric"
+                    placeholder="Code from SMS"
+                />
+                <Button
+                    onPress={handleConfirmSMSCode}
+                    title="Confirm SMS code"
+                />
+            </ScrollView>
+        );
 }
 
-LoginScreen.navigationOptions = {
-    header: null,
-};
+export default LoginScreen;
