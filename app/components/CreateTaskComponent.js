@@ -179,7 +179,6 @@ class CreateTaskComponent extends Component {
             return;
         }
         let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
-        console.log(location);
         this.setState({ location });
         this.handleAddress({ latitude: location.coords.latitude, longitude: location.coords.longitude }, 'location');
     };

@@ -10,6 +10,7 @@ export default class Crud {
       try {
         const authorization = await firebase.auth().currentUser.getIdToken();
         header.authorization = authorization;
+        console.debug(authorization);
       } catch (error) {
         console.error('Error while fetching authorization token', error);
       }

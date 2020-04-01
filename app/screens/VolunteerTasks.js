@@ -1,5 +1,5 @@
-import { Button, FlatList, SafeAreaView, View, AsyncStorage } from "react-native";
 import React, { useEffect, useState } from "react";
+import { Button, FlatList, SafeAreaView, RefreshControl, AsyncStorage } from "react-native";
 import { connect } from "react-redux";
 import { getPendingTasksForPincode, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
@@ -7,16 +7,26 @@ import { USER_PINCODE_KEY } from '../constants/Storage';
 
 function VolunteerTasks(props) {
   const [pincode, setPincode] = useState();
+  const [refreshing, setRefreshing] = useState(false);
 
   AsyncStorage.getItem(USER_PINCODE_KEY).then((storedPincode) => {
     setPincode(storedPincode);
+    return;
   })
 
-  useEffect(() => {
-    if (pincode) {
+  _handleRefresh = () =>{
+    setRefreshing(true);
+    if(pincode) {
       props.getPendingTasksForPincode(pincode);
     }
-  }, []);
+    setRefreshing(false);
+  }
+
+  useEffect(() => {
+    setRefreshing(true);
+    props.getPendingTasksForPincode(pincode);
+    setRefreshing(false);
+  }, [pincode]);
 
   useEffect(() => {
     if (pincode) {
@@ -29,7 +39,14 @@ function VolunteerTasks(props) {
 
   return (
     <SafeAreaView >
-      <FlatList data={tasks}
+      <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={_handleRefresh}
+          />
+        }
+        data={tasks}
         renderItem={({ item }) =>
           <Item details={item} >
             <Button

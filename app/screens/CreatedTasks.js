@@ -1,11 +1,19 @@
-import { Button, View, FlatList, SafeAreaView } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { Button, View, FlatList, SafeAreaView, RefreshControl } from "react-native";
 import { connect } from "react-redux";
 import { getCreatedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
 import { t } from 'react-native-tailwindcss';
 
 function CreatedTasks(props) {
+  const [refreshing, setRefreshing] = useState(false);
+
+  _handleRefresh = () => {
+    setRefreshing(true);
+    props.getCreatedTasks();
+    setRefreshing(false);
+  }
+
   useEffect(() => {
     props.getCreatedTasks();
   }, []);
@@ -20,6 +28,12 @@ function CreatedTasks(props) {
   return (
     <SafeAreaView>
       <FlatList
+        refreshControl={
+          <RefreshControl
+           refreshing={refreshing}
+           onRefresh={_handleRefresh}
+          />
+        }
         data={tasks}
         renderItem={({ item }) => <Item details={item}>
           <View style={[t.flex, t.flexRow]}>
