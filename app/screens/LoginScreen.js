@@ -29,8 +29,9 @@ const LoginScreen = () => {
     const handleUser = (user) => {
         if (user && !user.isAnonymous) {
             navigation.navigate(REGISTER_USER);
-            return;
+          return <></>;
         }
+      return <></>;
     }
 
     if (firebase.auth().currentUser && !firebase.auth().currentUser.isAnonymous) {
@@ -42,32 +43,32 @@ const LoginScreen = () => {
     });
 
     if (!confirmSMSCode)
-        return ( 
+      return (
             <ScrollView style = {{padding: 20,marginTop: 20}} >
-                <TextInput 
-                    value = {phone}
-                    onChangeText = {setPhone}
-                    keyboardType = "phone-pad"
-                    placeholder = "Your phone" 
+              <TextInput
+                value = {phone}
+                onChangeText = {setPhone}
+                keyboardType = "phone-pad"
+                placeholder="Your phone"
                 />
-                <Button 
-                    onPress = {handleSendSMS}
-                    title = "Next" 
+              <Button
+                onPress = {handleSendSMS}
+                title="Next"
                 />
             </ScrollView>
         );
     else
-        return ( 
+      return (
             <ScrollView style = {{padding: 20,marginTop: 20}} >
                 <TextInput
-                    value = {smsCode}
-                    onChangeText = {setSmsCode}
-                    keyboardType = "numeric"
-                    placeholder = "Code from SMS" 
+                  value = {smsCode}
+                  onChangeText = {setSmsCode}
+                  keyboardType = "numeric"
+                  placeholder="Code from SMS"
                 />
-                <Button 
-                    onPress = {handleConfirmSMSCode}
-                    title = "Confirm SMS code" 
+              <Button
+                onPress = {handleConfirmSMSCode}
+                title="Confirm SMS code"
                 />
             </ScrollView>
         );
