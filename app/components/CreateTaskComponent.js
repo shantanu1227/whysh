@@ -81,8 +81,11 @@ class CreateTaskComponent extends Component {
             Alert.alert("Please select category.");
             return;
         }
-      this.storeAddress();
-        console.log(this.state.address);
+        if(this.state.taskDetail.trim().length == 0) {
+            Alert.alert("Please enter description.");
+            return;
+        }
+        this.storeAddress();
         this.props.dispatch(createTask(this.state.taskDetail, this.state.address, this.state.checked));
     }
 

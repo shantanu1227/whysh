@@ -39,7 +39,7 @@ function CreatedTasks(props) {
           />
         }
         data={tasks}
-        renderItem={({ item }) => <Item details={item}>
+        renderItem={({ item }) => <Item details={item} showContact={true} isCreator={true}>
           <View style={[t.flex, t.flexRow]}>
             {!['cancelled', 'completed'].includes(item.status) &&
               <View style={[t.w1_2, t.pR1]}>

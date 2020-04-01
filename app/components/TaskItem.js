@@ -1,4 +1,5 @@
 import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Linking } from 'expo';
 import t from "react-native-tailwindcss/tailwind";
 import { colors } from "../styles/Common";
 import { statuses } from "../styles/TaskStatuses";
@@ -7,7 +8,7 @@ import { Entypo } from "@expo/vector-icons";
 import { getFormattedAddress } from "../methods/Common";
 import React from "react";
 
-export default function Item({ details, children }) {
+export default function Item({ details, children, showContact, isCreator }) {
 
   const styles = StyleSheet.create({
     wrap: {
@@ -28,6 +29,28 @@ export default function Item({ details, children }) {
       paddingHorizontal: 5
     }
   });
+
+  let contactDetails = <></>;
+  if (showContact) {
+    if (isCreator) {
+      if (details.assignedTo !== null) {
+        contactDetails = (
+          <View>
+            <Text>Assigned To - {details.assignedTo.name}</Text>
+            <Text onPress={() => Linking.openURL(`tel:${details.assignedTo.phone}`)}>{details.assignedTo.phone}</Text>
+          </View>
+        )
+      }
+    } else {
+      contactDetails = (
+          <View>
+            <Text>Created By - {details.createdBy.name}</Text>
+            <Text onPress={() => Linking.openURL(`tel:${details.createdBy.phone}`)}>{details.createdBy.phone}</Text>
+          </View>
+        )
+    }
+  }
+
 
   return (
     <View style={styles.wrap}>
@@ -53,6 +76,7 @@ export default function Item({ details, children }) {
       <View style={styles.requestActions}>
         {children}
       </View>
+      {contactDetails}
     </View>
   );
 }

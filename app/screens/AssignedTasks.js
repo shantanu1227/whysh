@@ -38,7 +38,7 @@ function AssignedTasks(props) {
           />
         }
         data={tasks}
-        renderItem={({ item }) => <Item details={item} />}
+        renderItem={({ item }) => <Item details={item} showContact={true} isCreator={false} />}
         keyExtractor={item => item.id}
       />
     </SafeAreaView>
