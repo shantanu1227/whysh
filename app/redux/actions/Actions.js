@@ -1,6 +1,7 @@
 import Apis from "../../services/apis";
 import * as taskTypes from '../types';
 import * as categoryAction from '../actions/categoryAction';
+import * as createTaskAction from '../actions/createTaskAction';
 
 const apis = new Apis();
 
@@ -90,7 +91,7 @@ export function getCategories() {
         return res.categories;
       }
     }).catch((error) => {
-      dispatch(categoryAction.fetchCategoryFailure(error))
+      dispatch(categoryAction.fetchCategoryFailure(error));
     });
   }
 }
@@ -99,13 +100,14 @@ export function createTask(taskName, address, categories) {
   const task = apis.createTask(taskName, address, categories);
 
   return (dispatch) => {
-    task.then(res => {
+    dispatch(createTaskAction.createTaskBegin());
+    return task.then(res => {
       if (res) {
-        dispatch({
-          type: taskTypes.CREATE_TASK,
-          payload: res
-        });
+        dispatch(createTaskAction.createTaskSuccess(res.task));
+        return res.task;
       }
+    }).catch((error) => {
+      dispatch(createTaskAction.createTaskFailure(error));
     });
   }
 }

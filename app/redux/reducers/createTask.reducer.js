@@ -1,33 +1,33 @@
-import { FETCH_CATEGORY_BEGIN, FETCH_CATEGORY_SUCCESS, FETCH_CATEGORY_FAILURE } from '../actions/categoryAction';
+import { CREATE_TASK_BEGIN, CREATE_TASK_SUCCESS, CREATE_TASK_FAILURE } from '../actions/createTaskAction';
 
 const initialState = {
-  categories: [],
+  task: null,
   loading: false,
   error: null
 };
 
 export default function categoryReducer(state = initialState, action) {
   switch (action.type) {
-    case FETCH_CATEGORY_BEGIN:
+    case CREATE_TASK_BEGIN:
       return {
         ...state,
         loading: true,
         error: null
       };
 
-    case FETCH_CATEGORY_SUCCESS:
+    case CREATE_TASK_SUCCESS:
       return {
         ...state,
         loading: false,
-        categories: action.payload.categories
+        task: action.payload.task
       };
 
-    case FETCH_CATEGORY_FAILURE:
+    case CREATE_TASK_FAILURE:
       return {
         ...state,
         loading: false,
         error: action.payload.error,
-        categories: []
+        task: null
       };
 
     default:

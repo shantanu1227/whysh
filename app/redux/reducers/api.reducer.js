@@ -5,8 +5,7 @@ const INITIAL_STATE = {
   assignedTasks: {},
   createdTasks: {},
   actionTakenOnTask: {},
-  registerUserTask: {},
-  createTask: {}
+  registerUserTask: {}
 };
 
 export default function (state = INITIAL_STATE, action) {
@@ -36,10 +35,6 @@ export default function (state = INITIAL_STATE, action) {
     case taskType.REGISTER_USER_TASK:
       return {
         ...state, registerUserTask: payload
-      };
-    case taskType.CREATE_TASK:
-      return {
-        ...state, createTask: payload
       };
 
     default:

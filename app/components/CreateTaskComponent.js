@@ -1,50 +1,65 @@
 import React, { Component, } from 'react';
 import { AsyncStorage, FlatList, View, ActivityIndicator, Alert } from 'react-native';
-import Constants from 'expo-constants';
 import { connect } from 'react-redux';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
 import { getCategories, createTask } from '../redux/actions/Actions';
 import { ListItem, Input, Card, Button } from 'react-native-elements'
-import { USER_PINCODE_KEY } from '../constants/Storage';
+import * as storageKey from '../constants/Storage';
+import { CREATED_TASKS } from '../constants/Routes';
 
 class CreateTaskComponent extends Component {
     state = {
         location: null,
         errorMessage: null,
         checked: [],
-        taskDetail: "",
+        taskDetail: '',
         address: {
-            country: 'India'
+            pincode: '',
+            flat: '',
+            street1: '',
+            street2: '',
+            city: '',
+            country: 'India',
+            location:{
+                latitude: null,
+                longitude: null
+            }
         }
     }
 
     handleTaskDetail = (text) => {
-        this.setState({taskDetail: text});
+        this.setState({ taskDetail: text });
+    }
+
+    storeAddress = async () => {
+        const flat = [storageKey.USER_FLAT_KEY, this.state.address.flat];
+        const street1 = [storageKey.USER_STREET1_KEY, this.state.address.street1];
+        const street2 = [storageKey.USER_STREET2_KEY, this.state.address.street2];
+        const city = [storageKey.USER_CITY_KEY, this.state.address.city];
+        await AsyncStorage.multiSet([flat, street1, street2, city]);
     }
 
     componentDidMount() {
         this.props.dispatch(getCategories());
-        AsyncStorage.getItem(USER_PINCODE_KEY).then((pincode) => {
-            this.handleAddress(pincode, 'pincode');
-        });
         this._getLocationAsync();
+        this._getAddressData();
     }
 
     handleCheckboxPress = item => {
-        const {checked} = this.state;
+        const { checked } = this.state;
         // These ensures that multiple checkboxes don't all get affected when one is clicked
         if (!checked.includes(item)) {
-            this.setState({checked: [...checked, item]});
+            this.setState({ checked: [...checked, item] });
         } else {
-            this.setState({checked: checked.filter(a => a !== item)});
+            this.setState({ checked: checked.filter(a => a !== item) });
         }
     };
 
-    handleAddress = (text, _property) => {
+    handleAddress = (value, _property) => {
         const address = this.state.address;
-        address[_property] = text;
-        this.setState({address: address});
+        address[_property] = value;
+        this.setState({ address: address });
     }
 
     handleTaskCreation = () => {
@@ -52,26 +67,40 @@ class CreateTaskComponent extends Component {
             Alert.alert("Location is not available.");
             return;
         }
-        
+        if(this.state.checked.length == 0){
+            Alert.alert("Please select category.");
+            return;
+        }
+        this.storeAddress();        
+        console.log(this.state.address);
+        this.props.dispatch(createTask(this.state.taskDetail, this.state.address, this.state.checked));
+    }
+
+    handleTaskCreationSuccess= () => {
+        console.log(this.state);
+        this.state.navigation.navigate(CREATED_TASKS);
+        return;
     }
 
     keyExtractor = (item, index) => index.toString();
     renderItem = ({ item }) => (
-        <ListItem checkBox={{ // CheckBox Props
-            checked: this.state.checked.includes(item),
-            onPress: () => this.handleCheckboxPress(item),
-        }}
+        <ListItem 
+            checkBox={{ checked: this.state.checked.includes(item), onPress: () => this.handleCheckboxPress(item) }}
             onPress={() => this.handleCheckboxPress(item)}
             title={item.name.toUpperCase()}
         />
     )
 
     render() {
-        const { error, loading, categories } = this.props;
-        if (error) {
-            return Alert.alert(error.message);
+        const { categoriesError, categoriesLoading, categories, task, taskError, taskLoading } = this.props;
+        if (categoriesError || taskError) {
+            const error = categoriesError || taskError;
+            if (error) {
+                console.log('error found', error);
+                return Alert.alert(error.message);
+            }
         }
-        if (loading) {
+        if (categoriesLoading || taskLoading || task) {
             return (
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <ActivityIndicator size={'large'} />
@@ -132,34 +161,69 @@ class CreateTaskComponent extends Component {
                             <Card containerStyle={{ marginTop: 0 }} >
                                 <Button title="Create Task" onPress={this.handleTaskCreation}></Button>
                             </Card>
-                        </View>}
+                        </View>
+                    }
                 />
             )
         }
         return (
             <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }} >
                 <ActivityIndicator size={'large'} />
-            </View >
+            </View>
         )
     }
     _getLocationAsync = async () => {
-        let {status} = await Permissions.askAsync(Permissions.LOCATION);
+        let { status } = await Permissions.askAsync(Permissions.LOCATION);
         if (status !== 'granted') {
-            this.setState({
-                error: {message: 'Permission to access location was denied'},
-            });
+            this.setState({ error: { message: 'Permission to access location was denied' } });
             return;
         }
-        let location = await Location.getCurrentPositionAsync({accuracy: Location.Accuracy.BestForNavigation});
-        this.setState({location});
-        this.handleAddress({latitude: location.latitude, longitude: location.longitude}, 'location');
+        let location = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.BestForNavigation });
+        console.log(location);
+        this.setState({ location });
+        this.handleAddress({ latitude: location.coords.latitude, longitude: location.coords.longitude }, 'location');
     };
+
+    _getAddressData = async () => {
+        let results = await AsyncStorage.multiGet([storageKey.USER_PINCODE_KEY, storageKey.USER_FLAT_KEY,
+        storageKey.USER_STREET1_KEY, storageKey.USER_STREET2_KEY, storageKey.USER_CITY_KEY]);
+        results.forEach((result) => {
+            const key = result[0];
+            const value = result[1];
+            let addressKey = null;
+            switch (key) {
+                case storageKey.USER_PINCODE_KEY:
+                    addressKey = 'pincode';
+                    break;
+                case storageKey.USER_FLAT_KEY:
+                    addressKey = 'flat';
+                    break;
+                case storageKey.USER_STREET1_KEY:
+                    addressKey = 'street1';
+                    break;
+                case storageKey.USER_STREET2_KEY:
+                    addressKey = 'street2';
+                    break;
+                case storageKey.USER_CITY_KEY:
+                    addressKey = 'city';
+                    break;
+                default:
+                    addressKey = null;
+            }
+            if(value && addressKey) {
+                this.handleAddress(value, addressKey);
+            }
+        });
+    }
 }
 
 const mapStateToProps = state => ({
     categories: state.categories.categories,
-    loading: state.categories.loading,
-    error: state.categories.error
+    categoriesLoading: state.categories.loading,
+    categoriesError: state.categories.error,
+    task: state.createTask.task,
+    taskError: state.createTask.error,
+    taskLoading: state.createTask.loading
 });
 
 export default connect(mapStateToProps)(CreateTaskComponent);

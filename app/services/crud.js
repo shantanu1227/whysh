@@ -9,7 +9,6 @@ export default class Crud {
     if (firebase.auth().currentUser && !firebase.auth().currentUser.isAnonymous) {
       try {
         const authorization = await firebase.auth().currentUser.getIdToken();
-        console.debug(authorization);
         header.authorization = authorization;
       } catch (error) {
         console.error('Error while fetching authorization token', error);
