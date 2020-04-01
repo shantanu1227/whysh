@@ -1,6 +1,6 @@
 import { useLinking } from '@react-navigation/native';
 import { Linking } from 'expo';
-import {HOME, LOGIN, routeNames, VOLUNTEER_TASKS} from "../constants/Routes";
+import {HOME, LOGIN, routeNames, VOLUNTEER_TASKS, REGISTER_USER} from "../constants/Routes";
 
 export default function(containerRef) {
   return useLinking(containerRef, {
@@ -13,7 +13,8 @@ export default function(containerRef) {
           [LOGIN]: routeNames[LOGIN].url,
           Links: 'links',
           Settings: 'settings',
-          [VOLUNTEER_TASKS]: routeNames[VOLUNTEER_TASKS].url
+          [VOLUNTEER_TASKS]: routeNames[VOLUNTEER_TASKS].url,
+          [REGISTER_USER]: routeNames[REGISTER_USER].url
         },
       },
     },

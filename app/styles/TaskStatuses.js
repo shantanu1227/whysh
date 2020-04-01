@@ -2,14 +2,12 @@ import {StyleSheet} from 'react-native';
 
 export const statuses = StyleSheet.create({
   common: {
-    borderRadius: '4px',
     color: 'white',
     backgroundColor: 'green',
     textAlign: 'center',
-    padding: '5px',
+    padding: 5,
     textTransform: 'uppercase',
-    maxHeight: '30px',
-    lineHeight: '20px'
+    maxHeight: 30,
   },
   pending: {
     backgroundColor: '#6B6B67'

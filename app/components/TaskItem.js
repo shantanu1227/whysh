@@ -11,22 +11,21 @@ export default function Item({details, children}) {
 
   const styles = StyleSheet.create({
     wrap: {
-      paddingVertical: '10px',
-      paddingHorizontal: '15px',
+      paddingVertical: 10,
+      paddingHorizontal: 15,
       backgroundColor: 'white',
-      margin: '10px',
-      borderRadius: '4px'
+      margin: 10,
     },
     container: {
-      paddingVertical: '10px',
-      paddingHorizontal: '5px'
+      paddingVertical: 10,
+      paddingHorizontal: 5
     },
     requestActions: {
-      paddingVertical: '5px',
-      paddingHorizontal: '5px'
+      paddingVertical: 5,
+      paddingHorizontal: 5
     },
     addressWrap: {
-      paddingHorizontal: '5px'
+      paddingHorizontal: 5
     }
   });
 
@@ -40,16 +39,14 @@ export default function Item({details, children}) {
         <Text style={[statuses.common, statuses[details.status], t.w1_4]}>{details.status}</Text>
       </View>
       <View style={styles.addressWrap}>
-        <Text>
-          <TouchableOpacity onPress={() => {
-            openMap({latitude: 37.865101, longitude: -119.538330});
-          }}>
+        <Text onPress={() => {
+                openMap({latitude: details.address.location.latitude, longitude: details.address.location.longitude})
+              }}>
             <Entypo
               name="location-pin"
               size={30}
               style={{marginBottom: -3}}
             />
-          </TouchableOpacity>
           {getFormattedAddress(details.address)}
         </Text>
       </View>

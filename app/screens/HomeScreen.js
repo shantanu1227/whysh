@@ -1,6 +1,5 @@
 import * as React from 'react';
-import {View} from "react-native";
-import {Button} from "react-native-web";
+import {View, Button} from "react-native";
 import {LOGIN, VOLUNTEER_TASKS} from "../constants/Routes";
 import {REQUEST_USER, VOLUNTEER} from "../constants/UserTypes";
 

@@ -1,24 +1,27 @@
-import {GET_ASSIGNED_TASKS, GET_CREATED_TASKS, GET_PENDING_TASKS_FOR_PINCODE, TAKE_ACTION_ON_TASK} from "../types";
+import * as taskType from "../types";
 
 const INITIAL_STATE = {
   pendingTasksForPincode: {},
   assignedTasks: {},
   createdTasks: {},
-  actionTakenOnTask: {}
+  actionTakenOnTask: {},
+  registerUserTask: {}
 };
 
 export default function (state = INITIAL_STATE, action) {
   const {type, payload, err} = action;
 
   switch (type) {
-    case GET_PENDING_TASKS_FOR_PINCODE:
+    case taskType.GET_PENDING_TASKS_FOR_PINCODE:
       return {...state, pendingTasksForPincode: payload};
-    case GET_ASSIGNED_TASKS:
+    case taskType.GET_ASSIGNED_TASKS:
       return {...state, assignedTasks: payload};
-    case GET_CREATED_TASKS:
+    case taskType.GET_CREATED_TASKS:
       return {...state, createdTasks: payload};
-    case TAKE_ACTION_ON_TASK:
+    case taskType.TAKE_ACTION_ON_TASK:
       return {...state, actionTakenOnTask: payload};
+    case taskType.REGISTER_USER_TASK:
+      return {...state, registerUserTask: payload};
 
     default:
       return state;
