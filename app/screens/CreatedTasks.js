@@ -14,6 +14,10 @@ function CreatedTasks(props) {
     props.getCreatedTasks();
   }, [props.actionTakenOnTask]);
 
+  useEffect(() => {
+    props.getCreatedTasks();
+  }, [props.task]);
+
   const { createdTasks } = props;
   const { tasks } = createdTasks || {};
 
@@ -55,7 +59,8 @@ function CreatedTasks(props) {
 const mapStateToProps = (state) => {
   return {
     createdTasks: state.apisResp.createdTasks,
-    actionTakenOnTask: state.apisResp.actionTakenOnTask
+    actionTakenOnTask: state.apisResp.actionTakenOnTask,
+    task: state.createTask.task
   }
 };
 

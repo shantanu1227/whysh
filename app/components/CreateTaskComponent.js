@@ -46,6 +46,16 @@ class CreateTaskComponent extends Component {
         this._getAddressData();
     }
 
+  componentDidUpdate(prevProps) {
+    const {task} = this.props;
+    if (task && task !== prevProps.task) {
+      this.setState({
+        taskDetail: '',
+        checked: []
+      });
+    }
+  }
+
     handleCheckboxPress = item => {
         const { checked } = this.state;
         // These ensures that multiple checkboxes don't all get affected when one is clicked
@@ -71,7 +81,7 @@ class CreateTaskComponent extends Component {
             Alert.alert("Please select category.");
             return;
         }
-        this.storeAddress();        
+      this.storeAddress();
         console.log(this.state.address);
         this.props.dispatch(createTask(this.state.taskDetail, this.state.address, this.state.checked));
     }
@@ -84,7 +94,7 @@ class CreateTaskComponent extends Component {
 
     keyExtractor = (item, index) => index.toString();
     renderItem = ({ item }) => (
-        <ListItem 
+      <ListItem
             checkBox={{ checked: this.state.checked.includes(item), onPress: () => this.handleCheckboxPress(item) }}
             onPress={() => this.handleCheckboxPress(item)}
             title={item.name.toUpperCase()}
@@ -92,7 +102,7 @@ class CreateTaskComponent extends Component {
     )
 
     render() {
-        const { categoriesError, categoriesLoading, categories, task, taskError, taskLoading } = this.props;
+      const {categoriesError, categoriesLoading, categories, taskError, taskLoading} = this.props;
         if (categoriesError || taskError) {
             const error = categoriesError || taskError;
             if (error) {
@@ -100,7 +110,7 @@ class CreateTaskComponent extends Component {
                 return Alert.alert(error.message);
             }
         }
-        if (categoriesLoading || taskLoading || task) {
+      if (categoriesLoading || taskLoading) {
             return (
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <ActivityIndicator size={'large'} />
