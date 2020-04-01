@@ -3,6 +3,7 @@ import { FlatList, SafeAreaView, RefreshControl } from "react-native";
 import { connect } from "react-redux";
 import { getAssignedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
+import ListRenderer from "../components/ListRenderer";
 
 function AssignedTasks(props) {
   const [refreshing, setRefreshing] = useState(false);
@@ -14,33 +15,35 @@ function AssignedTasks(props) {
   }, []);
 
   useEffect(() => {
-    setRefreshing(true);    
+    setRefreshing(true);
     props.getAssignedTasks();
     setRefreshing(false);
   }, [props.actionTakenOnTask]);
 
-  _handleRefresh = () =>{
+  const _handleRefresh = () => {
     setRefreshing(true);
     props.getAssignedTasks();
     setRefreshing(false);
   }
 
   const { assignedTasks } = props;
-  const { tasks } = assignedTasks || {};
+  const {tasks} = assignedTasks || {tasks: []};
 
   return (
-    <SafeAreaView>
-      <FlatList
-      refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={_handleRefresh}
-          />
-        }
-        data={tasks}
-        renderItem={({ item }) => <Item details={item} showContact={true} isCreator={false} />}
-        keyExtractor={item => item.id}
-      />
+    <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+      <ListRenderer listLength={(tasks || []).length}>
+        <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_handleRefresh}
+            />
+          }
+          data={tasks}
+          renderItem={({item}) => <Item details={item} showContact={true} isCreator={false}/>}
+          keyExtractor={item => item.id}
+        />
+      </ListRenderer>
     </SafeAreaView>
   );
 }

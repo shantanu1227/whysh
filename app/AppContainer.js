@@ -14,7 +14,7 @@ import screenOptions from "./styles/Header";
 
 const Stack = createStackNavigator();
 
-const AppContainer = (props) => {
+const AppContainer = ({navigation}) => {
   const [isLoadingComplete, setLoadingComplete] = React.useState(false);
   const [initialNavigationState, setInitialNavigationState] = React.useState();
   const containerRef = React.useRef();
@@ -26,10 +26,10 @@ const AppContainer = (props) => {
         <NavigationContainer ref={containerRef} initialState={initialNavigationState}>
           <Stack.Navigator
             screenOptions={screenOptions}>
-            <Stack.Screen name={routeNames[HOME].title} component={SideNavigation}/>
-            <Stack.Screen name={routeNames[LOGIN].title} component={SideNavigation}/>
-            <Stack.Screen name={routeNames[REGISTER_USER].title} component={RegisterUser} />
-            <Stack.Screen name={REGISTER_USER} component={RegisterUser} />
+            <Stack.Screen name={HOME} options={{title: getHeaderTitle(HOME)}} component={SideNavigation}/>
+            <Stack.Screen name={LOGIN} options={{title: getHeaderTitle(LOGIN)}} component={SideNavigation}/>
+            <Stack.Screen name={REGISTER_USER} options={{title: getHeaderTitle(REGISTER_USER)}}
+                          component={RegisterUser}/>
           </Stack.Navigator>
         </NavigationContainer>
       </View >
@@ -45,3 +45,7 @@ const styles = StyleSheet.create({
 });
 
 export default AppContainer;
+
+function getHeaderTitle(route) {
+  return routeNames[route].title || 'WHYSH';
+}

@@ -4,11 +4,12 @@ import { connect } from "react-redux";
 import { getCreatedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
 import { t } from 'react-native-tailwindcss';
+import ListRenderer from "../components/ListRenderer";
 
 function CreatedTasks(props) {
   const [refreshing, setRefreshing] = useState(false);
 
-  _handleRefresh = () => {
+  const _handleRefresh = () => {
     setRefreshing(true);
     props.getCreatedTasks();
     setRefreshing(false);
@@ -30,18 +31,19 @@ function CreatedTasks(props) {
   const { tasks } = createdTasks || {};
 
   return (
-    <SafeAreaView>
-      <FlatList
-        refreshControl={
-          <RefreshControl
-           refreshing={refreshing}
-           onRefresh={_handleRefresh}
-          />
-        }
-        data={tasks}
-        renderItem={({ item }) => <Item details={item} showContact={true} isCreator={true}>
-          <View style={[t.flex, t.flexRow]}>
-            {!['cancelled', 'completed'].includes(item.status) &&
+    <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+      <ListRenderer listLength={(tasks || []).length}>
+        <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_handleRefresh}
+            />
+          }
+          data={tasks}
+          renderItem={({item}) => <Item details={item} showContact={true} isCreator={true}>
+            <View style={[t.flex, t.flexRow]}>
+              {!['cancelled', 'completed'].includes(item.status) &&
               <View style={[t.w1_2, t.pR1]}>
                 <Button
                   onPress={() => {
@@ -51,8 +53,8 @@ function CreatedTasks(props) {
                   color="#C0392B"
                 />
               </View>
-            }
-            {item.status === 'assigned' &&
+              }
+              {item.status === 'assigned' &&
               <View style={[t.w1_2, t.pL1]}>
                 <Button
                   onPress={() => {
@@ -61,11 +63,12 @@ function CreatedTasks(props) {
                   title="Mark as Fulfilled"
                 />
               </View>
-            }
-          </View>
-        </Item>}
-        keyExtractor={item => item.id}
-      />
+              }
+            </View>
+          </Item>}
+          keyExtractor={item => item.id}
+        />
+      </ListRenderer>
     </SafeAreaView>
   );
 }

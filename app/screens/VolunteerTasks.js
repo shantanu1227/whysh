@@ -4,59 +4,54 @@ import { connect } from "react-redux";
 import { getPendingTasksForPincode, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
 import { USER_PINCODE_KEY } from '../constants/Storage';
+import ListRenderer from "../components/ListRenderer";
 
 function VolunteerTasks(props) {
-  const [pincode, setPincode] = useState();
   const [refreshing, setRefreshing] = useState(false);
 
-  AsyncStorage.getItem(USER_PINCODE_KEY).then((storedPincode) => {
-    setPincode(storedPincode);
-    return;
-  })
-
-  _handleRefresh = () =>{
+  const _handleRefresh = () => {
     setRefreshing(true);
-    if(pincode) {
-      props.getPendingTasksForPincode(pincode);
+    if (props.pincode) {
+      props.getPendingTasksForPincode(props.pincode);
     }
     setRefreshing(false);
   }
 
   useEffect(() => {
-    setRefreshing(true);
-    props.getPendingTasksForPincode(pincode);
-    setRefreshing(false);
-  }, [pincode]);
+    _handleRefresh();
+  }, [props.pincode, props.actionTakenOnTask]);
 
   useEffect(() => {
-    if (pincode) {
-      props.getPendingTasksForPincode(pincode);
-    }
+    _handleRefresh();
   }, [props.actionTakenOnTask]);
 
   const { pendingTasks } = props;
   const { tasks } = pendingTasks || {};
 
   return (
-    <SafeAreaView >
-      <FlatList
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={_handleRefresh}
-          />
-        }
-        data={tasks}
-        renderItem={({ item }) =>
-          <Item details={item} >
-            <Button
-              title="Accept Request"
-              onPress={() => { props.takeActionOnTask(item.id, 'assign') }}
+    <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+      <ListRenderer listLength={(tasks || []).length}>
+        <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_handleRefresh}
             />
-          </Item >
-        }
-        keyExtractor={item => item.id}
-      />
+          }
+          data={tasks}
+          renderItem={({item}) =>
+            <Item details={item}>
+              <Button
+                title="Accept Request"
+                onPress={() => {
+                  props.takeActionOnTask(item.id, 'assign')
+                }}
+              />
+            </Item>
+          }
+          keyExtractor={item => item.id}
+        />
+      </ListRenderer>
     </SafeAreaView >
   );
 }
@@ -64,6 +59,7 @@ function VolunteerTasks(props) {
 const mapStateToProps = (state) => {
   return {
     pendingTasks: state.apisResp.pendingTasksForPincode,
+    pincode: state.apisResp.pincode,
     actionTakenOnTask: state.apisResp.actionTakenOnTask
   }
 };

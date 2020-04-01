@@ -1,12 +1,17 @@
 import * as taskType from "../types";
+import {AsyncStorage} from "react-native";
+import {USER_PINCODE_KEY} from "../../constants/Storage";
 
-const INITIAL_STATE = {
-  pendingTasksForPincode: {},
-  assignedTasks: {},
-  createdTasks: {},
-  actionTakenOnTask: {},
-  registerUserTask: {}
-};
+const INITIAL_STATE = async () => {
+  return {
+    pendingTasksForPincode: {},
+    assignedTasks: {},
+    createdTasks: {},
+    actionTakenOnTask: {},
+    registerUserTask: {},
+    pincode: await AsyncStorage.getItem(USER_PINCODE_KEY)
+  };
+}
 
 export default function (state = INITIAL_STATE, action) {
   const {
@@ -36,6 +41,10 @@ export default function (state = INITIAL_STATE, action) {
       return {
         ...state, registerUserTask: payload
       };
+    case taskType.SAVE_PINCODE:
+      return {
+        ...state, pincode: payload
+      }
 
     default:
       return state;

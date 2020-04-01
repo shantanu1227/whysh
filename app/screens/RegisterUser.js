@@ -3,7 +3,7 @@ import { ScrollView, AsyncStorage } from "react-native";
 import { Input, Button, Card } from 'react-native-elements';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux'
-import { registerUser } from '../redux/actions/Actions';
+import {registerUser, savePincode} from '../redux/actions/Actions';
 import { VOLUNTEER_TASKS } from '../constants/Routes';
 import { USER_PINCODE_KEY } from '../constants/Storage';
 
@@ -18,12 +18,14 @@ const RegisterUser = (props) => {
     useEffect(() => {
         setShowLoading(false);
         if (props.userRegistered && props.userRegistered.success) {
+          props.savePincode(pincode);
             Promise.all([
                 AsyncStorage.setItem(USER_PINCODE_KEY, pincode),
                 firebase.auth().currentUser.updateProfile({
                     displayName: name
                 })
             ]).then(() => {
+
                 props.navigation.navigate(VOLUNTEER_TASKS);
             }).catch((error) => {
                 console.error('Error Registering user', error);
@@ -98,4 +100,4 @@ const mapStateToProps = (state) => {
     }
 };
 
-export default connect(mapStateToProps, { registerUser })(RegisterUser);
+export default connect(mapStateToProps, {registerUser, savePincode})(RegisterUser);

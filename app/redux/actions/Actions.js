@@ -2,6 +2,7 @@ import Apis from "../../services/apis";
 import * as taskTypes from '../types';
 import * as categoryAction from '../actions/categoryAction';
 import * as createTaskAction from '../actions/createTaskAction';
+import {SAVE_PINCODE} from "../types";
 
 const apis = new Apis();
 
@@ -109,5 +110,11 @@ export function createTask(taskName, address, categories) {
     }).catch((error) => {
       dispatch(createTaskAction.createTaskFailure(error));
     });
+  }
+}
+
+export function savePincode(pincode) {
+  return (dispatch) => {
+    dispatch({type: SAVE_PINCODE, payload: pincode});
   }
 }

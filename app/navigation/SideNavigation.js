@@ -5,7 +5,17 @@ import LoginScreen from "../screens/LoginScreen";
 import LogoutScreen from '../screens/LogoutScreen';
 import CreateTaskScreen from '../screens/CreateTaskScreen';
 
-import { ASSIGNED_TASKS, CREATED_TASKS, HOME, LOGIN, routeNames, VOLUNTEER_TASKS, LOGOUT, CREATE_TASK } from "../constants/Routes";
+import {
+  ASSIGNED_TASKS,
+  CREATED_TASKS,
+  HOME,
+  LOGIN,
+  routeNames,
+  VOLUNTEER_TASKS,
+  LOGOUT,
+  CREATE_TASK,
+  REGISTER_USER
+} from "../constants/Routes";
 import CustomIcon from "../components/TabBarIcon";
 import VolunteerTasks from "../screens/VolunteerTasks";
 import AssignedTasks from "../screens/AssignedTasks";
@@ -13,6 +23,7 @@ import CreatedTasks from "../screens/CreatedTasks";
 import * as firebase from 'firebase';
 import logout from '../domain/logout';
 import screenOptions from "../styles/Header";
+import RegisterUser from "../screens/RegisterUser";
 
 const Drawer = createDrawerNavigator();
 const INITIAL_ROUTE_NAME = HOME;
