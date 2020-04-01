@@ -1,13 +1,13 @@
-import {Button, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import t from "react-native-tailwindcss/tailwind";
-import {colors} from "../styles/Common";
-import {statuses} from "../styles/TaskStatuses";
+import { colors } from "../styles/Common";
+import { statuses } from "../styles/TaskStatuses";
 import openMap from "react-native-open-maps";
-import {Entypo} from "@expo/vector-icons";
-import {getFormattedAddress} from "../methods/Common";
+import { Entypo } from "@expo/vector-icons";
+import { getFormattedAddress } from "../methods/Common";
 import React from "react";
 
-export default function Item({details, children}) {
+export default function Item({ details, children }) {
 
   const styles = StyleSheet.create({
     wrap: {
@@ -40,13 +40,13 @@ export default function Item({details, children}) {
       </View>
       <View style={styles.addressWrap}>
         <Text onPress={() => {
-                openMap({latitude: details.address.location.latitude, longitude: details.address.location.longitude})
-              }}>
-            <Entypo
-              name="location-pin"
-              size={30}
-              style={{marginBottom: -3}}
-            />
+          openMap({ latitude: details.address.location.latitude, longitude: details.address.location.longitude })
+        }}>
+          <Entypo
+            name="location-pin"
+            size={30}
+            style={{ marginBottom: -3 }}
+          />
           {getFormattedAddress(details.address)}
         </Text>
       </View>

@@ -5,26 +5,44 @@ const INITIAL_STATE = {
   assignedTasks: {},
   createdTasks: {},
   actionTakenOnTask: {},
-  registerUserTask: {}
+  registerUserTask: {},
+  createTask: {}
 };
 
 export default function (state = INITIAL_STATE, action) {
-  const {type, payload, err} = action;
+  const {
+    type,
+    payload,
+    err
+  } = action;
 
   switch (type) {
     case taskType.GET_PENDING_TASKS_FOR_PINCODE:
-      return {...state, pendingTasksForPincode: payload};
+      return {
+        ...state, pendingTasksForPincode: payload
+      };
     case taskType.GET_ASSIGNED_TASKS:
-      return {...state, assignedTasks: payload};
+      return {
+        ...state, assignedTasks: payload
+      };
     case taskType.GET_CREATED_TASKS:
-      return {...state, createdTasks: payload};
+      return {
+        ...state, createdTasks: payload
+      };
     case taskType.TAKE_ACTION_ON_TASK:
-      return {...state, actionTakenOnTask: payload};
+      return {
+        ...state, actionTakenOnTask: payload
+      };
     case taskType.REGISTER_USER_TASK:
-      return {...state, registerUserTask: payload};
+      return {
+        ...state, registerUserTask: payload
+      };
+    case taskType.CREATE_TASK:
+      return {
+        ...state, createTask: payload
+      };
 
     default:
       return state;
   }
 }
-

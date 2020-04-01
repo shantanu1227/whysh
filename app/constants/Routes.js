@@ -5,6 +5,7 @@ export const VOLUNTEER_TASKS = 'volunteerTasks';
 export const CREATED_TASKS = 'createdTasks';
 export const ASSIGNED_TASKS = 'assignedTasks';
 export const REGISTER_USER = 'registerUser';
+export const CREATE_TASK = 'createTask';
 
 export const routeNames = {
   [HOME]: {
@@ -34,5 +35,9 @@ export const routeNames = {
   [REGISTER_USER]: {
     url: 'register-user',
     title: 'Register'
+  },
+  [CREATE_TASK]: {
+    url: 'tasks',
+    title: 'Add Task'
   }
 };

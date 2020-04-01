@@ -1,7 +1,7 @@
-import {FlatList, SafeAreaView} from "react-native";
-import React, {useEffect} from "react";
-import {connect} from "react-redux";
-import {getAssignedTasks} from "../redux/actions/Actions";
+import { FlatList, SafeAreaView } from "react-native";
+import React, { useEffect } from "react";
+import { connect } from "react-redux";
+import { getAssignedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
 
 function AssignedTasks(props) {
@@ -9,14 +9,18 @@ function AssignedTasks(props) {
     props.getAssignedTasks();
   }, []);
 
-  const {assignedTasks} = props;
-  const {tasks} = assignedTasks || {};
+  useEffect(() => {
+    props.getAssignedTasks();
+  }, [props.actionTakenOnTask]);
+
+  const { assignedTasks } = props;
+  const { tasks } = assignedTasks || {};
 
   return (
     <SafeAreaView>
       <FlatList
         data={tasks}
-        renderItem={({item}) => <Item details={item}/>}
+        renderItem={({ item }) => <Item details={item} />}
         keyExtractor={item => item.id}
       />
     </SafeAreaView>
@@ -25,8 +29,9 @@ function AssignedTasks(props) {
 
 const mapStateToProps = (state) => {
   return {
-    assignedTasks: state.apisResp.assignedTasks
+    assignedTasks: state.apisResp.assignedTasks,
+    actionTakenOnTask: state.apisResp.actionTakenOnTask
   }
 };
 
-export default connect(mapStateToProps, {getAssignedTasks})(AssignedTasks);
+export default connect(mapStateToProps, { getAssignedTasks, takeActionOnTask })(AssignedTasks);

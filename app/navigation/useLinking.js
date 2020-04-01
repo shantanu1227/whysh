@@ -1,8 +1,19 @@
-import { useLinking } from '@react-navigation/native';
-import { Linking } from 'expo';
-import {HOME, LOGIN, routeNames, VOLUNTEER_TASKS, REGISTER_USER} from "../constants/Routes";
+import {
+  useLinking
+} from '@react-navigation/native';
+import {
+  Linking
+} from 'expo';
+import {
+  HOME,
+  LOGIN,
+  routeNames,
+  VOLUNTEER_TASKS,
+  REGISTER_USER,
+  CREATE_TASK
+} from "../constants/Routes";
 
-export default function(containerRef) {
+export default function (containerRef) {
   return useLinking(containerRef, {
     prefixes: [Linking.makeUrl('/')],
     config: {
@@ -14,7 +25,8 @@ export default function(containerRef) {
           Links: 'links',
           Settings: 'settings',
           [VOLUNTEER_TASKS]: routeNames[VOLUNTEER_TASKS].url,
-          [REGISTER_USER]: routeNames[REGISTER_USER].url
+          [REGISTER_USER]: routeNames[REGISTER_USER].url,
+          [CREATE_TASK]: routeNames[CREATE_TASK].url
         },
       },
     },

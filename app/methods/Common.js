@@ -1,4 +1,10 @@
-export const getFormattedAddress = ({flat, street1, street2, pincode, city}) => {
+export const getFormattedAddress = ({
+  flat,
+  street1,
+  street2,
+  pincode,
+  city
+}) => {
   let address = '';
   if (flat) {
     address = flat;
@@ -6,32 +12,28 @@ export const getFormattedAddress = ({flat, street1, street2, pincode, city}) => 
   if (street1) {
     if (address) {
       address += ', ' + street1;
-    }
-    else {
+    } else {
       address = street1;
     }
   }
   if (street2) {
     if (address) {
       address += ', ' + street2;
-    }
-    else {
+    } else {
       address = street2;
     }
   }
   if (pincode) {
     if (address) {
       address += ', ' + pincode;
-    }
-    else {
+    } else {
       address = pincode;
     }
   }
   if (city) {
     if (address) {
       address += ', ' + city;
-    }
-    else {
+    } else {
       address = city;
     }
   }

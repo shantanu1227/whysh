@@ -1,9 +1,9 @@
 import React, {useState} from 'react';
-import { ScrollView, TextInput, Button } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import {ScrollView,TextInput,Button} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import * as firebase from 'firebase';
-import { signInWithPhoneNumber } from '../domain/phoneAuthentication';
-import {REGISTER_USER, VOLUNTEER_TASKS} from '../constants/Routes';
+import {signInWithPhoneNumber} from '../domain/phoneAuthentication';
+import {REGISTER_USER} from '../constants/Routes';
 
 
 const LoginScreen = () => {
@@ -28,50 +28,46 @@ const LoginScreen = () => {
 
     const handleUser = (user) => {
         if (user && !user.isAnonymous) {
-            if (user.displayName && user.displayName !== null) {
-                //logged in
-                navigation.navigate(VOLUNTEER_TASKS);
-                return;
-            } else if (user.displayName === null) {
-                //logged in but not registered
-                navigation.navigate(REGISTER_USER);
-                return;
-            }
+            navigation.navigate(REGISTER_USER);
+            return;
         }
     }
 
     if (firebase.auth().currentUser && !firebase.auth().currentUser.isAnonymous) {
         return handleUser(firebase.auth().currentUser);
     }
-   
+
     firebase.auth().onAuthStateChanged(user => {
         return handleUser(user);
     });
 
     if (!confirmSMSCode)
-        return (
-            <ScrollView style={{ padding: 20, marginTop: 20 }}>
-                <TextInput
-                    value={phone}
-                    onChangeText={setPhone}
-                    keyboardType="phone-pad"
-                    placeholder="Your phone"
+        return ( 
+            <ScrollView style = {{padding: 20,marginTop: 20}} >
+                <TextInput 
+                    value = {phone}
+                    onChangeText = {setPhone}
+                    keyboardType = "phone-pad"
+                    placeholder = "Your phone" 
                 />
-                <Button onPress={handleSendSMS} title="Next" />
+                <Button 
+                    onPress = {handleSendSMS}
+                    title = "Next" 
+                />
             </ScrollView>
         );
     else
-        return (
-            <ScrollView style={{ padding: 20, marginTop: 20 }}>
+        return ( 
+            <ScrollView style = {{padding: 20,marginTop: 20}} >
                 <TextInput
-                    value={smsCode}
-                    onChangeText={setSmsCode}
-                    keyboardType="numeric"
-                    placeholder="Code from SMS"
+                    value = {smsCode}
+                    onChangeText = {setSmsCode}
+                    keyboardType = "numeric"
+                    placeholder = "Code from SMS" 
                 />
-                <Button
-                    onPress={handleConfirmSMSCode}
-                    title="Confirm SMS code"
+                <Button 
+                    onPress = {handleConfirmSMSCode}
+                    title = "Confirm SMS code" 
                 />
             </ScrollView>
         );

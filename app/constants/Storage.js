@@ -1,1 +1,1 @@
-export const USER_PINCODE_KEY='user_pincode';
+export const USER_PINCODE_KEY = 'user_address:pincode';
