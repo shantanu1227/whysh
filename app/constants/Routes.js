@@ -22,7 +22,7 @@ export const routeNames = {
   },
   [VOLUNTEER_TASKS]: {
     url: 'volunteer/tasks',
-    title: 'Pending Tasks'
+    title: 'Help Someone'
   },
   [ASSIGNED_TASKS]: {
     url: 'assigned-tasks',
