@@ -12,6 +12,7 @@ import AssignedTasks from "../screens/AssignedTasks";
 import CreatedTasks from "../screens/CreatedTasks";
 import * as firebase from 'firebase';
 import logout from '../domain/logout';
+import screenOptions from "../styles/Header";
 
 const Drawer = createDrawerNavigator();
 const INITIAL_ROUTE_NAME = HOME;
@@ -30,6 +31,7 @@ export default function BottomTabNavigator({ navigation, route }) {
     return (
       <Drawer.Navigator
         drawerType='slide'
+        screenOptions={screenOptions}
         initialRouteName={INITIAL_ROUTE_NAME}
         onItemPress={
           (route) => {
