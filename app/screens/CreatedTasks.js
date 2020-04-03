@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { getCreatedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
 import { t } from 'react-native-tailwindcss';
-import ListRenderer from "../components/ListRenderer";
+import NoDataRenderer from "../components/NoDataRenderer";
 
 function CreatedTasks(props) {
   const [refreshing, setRefreshing] = useState(false);
@@ -32,7 +32,6 @@ function CreatedTasks(props) {
 
   return (
     <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-      <ListRenderer listLength={(tasks || []).length}>
         <FlatList
           refreshControl={
             <RefreshControl
@@ -67,8 +66,8 @@ function CreatedTasks(props) {
             </View>
           </Item>}
           keyExtractor={item => item.id}
+          ListEmptyComponent={NoDataRenderer}
         />
-      </ListRenderer>
     </SafeAreaView>
   );
 }

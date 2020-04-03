@@ -3,7 +3,6 @@ import { Linking } from 'expo';
 import t from "react-native-tailwindcss/tailwind";
 import { colors } from "../styles/Common";
 import { statuses } from "../styles/TaskStatuses";
-import openMap from "react-native-open-maps";
 import { Entypo } from "@expo/vector-icons";
 import { getFormattedAddress } from "../methods/Common";
 import React from "react";
@@ -51,6 +50,10 @@ export default function Item({ details, children, showContact, isCreator }) {
     }
   }
 
+  getMapsLink = (location) => {
+    return `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
+  }
+
 
   return (
     <View style={styles.wrap}>
@@ -63,7 +66,7 @@ export default function Item({ details, children, showContact, isCreator }) {
       </View>
       <View style={styles.addressWrap}>
         <Text onPress={() => {
-          openMap({ latitude: details.address.location.latitude, longitude: details.address.location.longitude })
+          Linking.openURL(getMapsLink(details.address.location));
         }}>
           <Entypo
             name="location-pin"

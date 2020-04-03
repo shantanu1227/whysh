@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { getPendingTasksForPincode, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
 import { USER_PINCODE_KEY } from '../constants/Storage';
-import ListRenderer from "../components/ListRenderer";
+import NoDataRenderer from "../components/NoDataRenderer";
 
 function VolunteerTasks(props) {
   const [refreshing, setRefreshing] = useState(false);
@@ -29,29 +29,28 @@ function VolunteerTasks(props) {
   const { tasks } = pendingTasks || {};
 
   return (
-    <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
-      <ListRenderer listLength={(tasks || []).length}>
-        <FlatList
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={_handleRefresh}
+    <SafeAreaView style={{ flex: 1, flexDirection: 'row', justifyContent: 'center' }}>
+      <FlatList
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={_handleRefresh}
+          />
+        }
+        data={tasks}
+        renderItem={({ item }) =>
+          <Item details={item}>
+            <Button
+              title="Accept Request"
+              onPress={() => {
+                props.takeActionOnTask(item.id, 'assign')
+              }}
             />
-          }
-          data={tasks}
-          renderItem={({item}) =>
-            <Item details={item}>
-              <Button
-                title="Accept Request"
-                onPress={() => {
-                  props.takeActionOnTask(item.id, 'assign')
-                }}
-              />
-            </Item>
-          }
-          keyExtractor={item => item.id}
-        />
-      </ListRenderer>
+          </Item>
+        }
+        keyExtractor={item => item.id}
+        ListEmptyComponent={NoDataRenderer}
+      />
     </SafeAreaView >
   );
 }
