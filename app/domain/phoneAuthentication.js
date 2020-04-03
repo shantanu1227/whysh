@@ -1,9 +1,8 @@
-//@flow
 import { Linking } from 'expo';
 import * as firebase from 'firebase';
 import * as WebBrowser from 'expo-web-browser';
 import { Platform } from 'react-native';
-import {FIREBASE_CONFIG} from '../constants/Environments';
+import { FIREBASE_CONFIG } from '../constants/Environments';
 
 const captchaUrl = `https://${FIREBASE_CONFIG.authDomain}/captcha.html?appurl=${Linking.makeUrl(
     ''

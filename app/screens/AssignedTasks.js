@@ -1,32 +1,57 @@
-import {FlatList, SafeAreaView} from "react-native";
-import React, {useEffect} from "react";
-import {connect} from "react-redux";
-import {getAssignedTasks} from "../redux/actions/Actions";
+import React, { useEffect, useState } from "react";
+import { FlatList, SafeAreaView, RefreshControl } from "react-native";
+import { connect } from "react-redux";
+import { getAssignedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
+import NoDataRenderer from "../components/NoDataRenderer";
 
 function AssignedTasks(props) {
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
+    setRefreshing(true);
     props.getAssignedTasks();
+    setRefreshing(false);
   }, []);
 
-  const {assignedTasks} = props;
-  const {tasks} = assignedTasks || {};
+  useEffect(() => {
+    setRefreshing(true);
+    props.getAssignedTasks();
+    setRefreshing(false);
+  }, [props.actionTakenOnTask]);
+
+  const _handleRefresh = () => {
+    setRefreshing(true);
+    props.getAssignedTasks();
+    setRefreshing(false);
+  }
+
+  const { assignedTasks } = props;
+  const {tasks} = assignedTasks || {tasks: []};
 
   return (
-    <SafeAreaView>
-      <FlatList
-        data={tasks}
-        renderItem={({item}) => <Item details={item}/>}
-        keyExtractor={item => item.id}
-      />
+    <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+        <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_handleRefresh}
+            />
+          }
+          data={tasks}
+          renderItem={({item}) => <Item details={item} showContact={true} isCreator={false}/>}
+          keyExtractor={item => item.id}
+          ListEmptyComponent={NoDataRenderer}
+        />
     </SafeAreaView>
   );
 }
 
 const mapStateToProps = (state) => {
   return {
-    assignedTasks: state.apisResp.assignedTasks
+    assignedTasks: state.apisResp.assignedTasks,
+    actionTakenOnTask: state.apisResp.actionTakenOnTask
   }
 };
 
-export default connect(mapStateToProps, {getAssignedTasks})(AssignedTasks);
+export default connect(mapStateToProps, { getAssignedTasks, takeActionOnTask })(AssignedTasks);

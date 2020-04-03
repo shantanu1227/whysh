@@ -1,13 +1,13 @@
-import {Button, StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Linking } from 'expo';
 import t from "react-native-tailwindcss/tailwind";
-import {colors} from "../styles/Common";
-import {statuses} from "../styles/TaskStatuses";
-import openMap from "react-native-open-maps";
-import {Entypo} from "@expo/vector-icons";
-import {getFormattedAddress} from "../methods/Common";
+import { colors } from "../styles/Common";
+import { statuses } from "../styles/TaskStatuses";
+import { Entypo } from "@expo/vector-icons";
+import { getFormattedAddress } from "../methods/Common";
 import React from "react";
 
-export default function Item({details, children}) {
+export default function Item({ details, children, showContact, isCreator }) {
 
   const styles = StyleSheet.create({
     wrap: {
@@ -29,6 +29,32 @@ export default function Item({details, children}) {
     }
   });
 
+  let contactDetails = <></>;
+  if (showContact) {
+    if (isCreator) {
+      if (details.assignedTo !== null) {
+        contactDetails = (
+          <View>
+            <Text>Assigned To - {details.assignedTo.name}</Text>
+            <Text onPress={() => Linking.openURL(`tel:${details.assignedTo.phone}`)}>{details.assignedTo.phone}</Text>
+          </View>
+        )
+      }
+    } else {
+      contactDetails = (
+          <View>
+            <Text>Created By - {details.createdBy.name}</Text>
+            <Text onPress={() => Linking.openURL(`tel:${details.createdBy.phone}`)}>{details.createdBy.phone}</Text>
+          </View>
+        )
+    }
+  }
+
+  getMapsLink = (location) => {
+    return `https://www.google.com/maps/search/?api=1&query=${location.latitude},${location.longitude}`;
+  }
+
+
   return (
     <View style={styles.wrap}>
       <View style={[styles.container, t.flex, t.flexRow]}>
@@ -40,19 +66,20 @@ export default function Item({details, children}) {
       </View>
       <View style={styles.addressWrap}>
         <Text onPress={() => {
-                openMap({latitude: details.address.location.latitude, longitude: details.address.location.longitude})
-              }}>
-            <Entypo
-              name="location-pin"
-              size={30}
-              style={{marginBottom: -3}}
-            />
+          Linking.openURL(getMapsLink(details.address.location));
+        }}>
+          <Entypo
+            name="location-pin"
+            size={30}
+            style={{ marginBottom: -3 }}
+          />
           {getFormattedAddress(details.address)}
         </Text>
       </View>
       <View style={styles.requestActions}>
         {children}
       </View>
+      {contactDetails}
     </View>
   );
 }

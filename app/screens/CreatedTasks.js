@@ -1,11 +1,20 @@
-import {Button, View, FlatList, SafeAreaView} from "react-native";
-import React, {useEffect} from "react";
-import {connect} from "react-redux";
-import {getCreatedTasks, takeActionOnTask} from "../redux/actions/Actions";
+import React, { useEffect, useState } from "react";
+import { Button, View, FlatList, SafeAreaView, RefreshControl } from "react-native";
+import { connect } from "react-redux";
+import { getCreatedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
-import {t} from 'react-native-tailwindcss';
+import { t } from 'react-native-tailwindcss';
+import NoDataRenderer from "../components/NoDataRenderer";
 
 function CreatedTasks(props) {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const _handleRefresh = () => {
+    setRefreshing(true);
+    props.getCreatedTasks();
+    setRefreshing(false);
+  }
+
   useEffect(() => {
     props.getCreatedTasks();
   }, []);
@@ -14,40 +23,51 @@ function CreatedTasks(props) {
     props.getCreatedTasks();
   }, [props.actionTakenOnTask]);
 
-  const {createdTasks} = props;
-  const {tasks} = createdTasks || {};
+  useEffect(() => {
+    props.getCreatedTasks();
+  }, [props.task]);
+
+  const { createdTasks } = props;
+  const { tasks } = createdTasks || {};
 
   return (
-    <SafeAreaView>
-      <FlatList
-        data={tasks}
-        renderItem={({item}) => <Item details={item}>
-          <View style={[t.flex, t.flexRow]}>
-            {!['cancelled', 'completed'].includes(item.status) &&
-            <View style={[t.w1_2, t.pR1]}>
-              <Button
-                onPress={() => {
-                  props.takeActionOnTask(item.id, 'cancel')
-                }}
-                title="Cancel"
-                color="#C0392B"
-              />
+    <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+        <FlatList
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={_handleRefresh}
+            />
+          }
+          data={tasks}
+          renderItem={({item}) => <Item details={item} showContact={true} isCreator={true}>
+            <View style={[t.flex, t.flexRow]}>
+              {!['cancelled', 'completed'].includes(item.status) &&
+              <View style={[t.w1_2, t.pR1]}>
+                <Button
+                  onPress={() => {
+                    props.takeActionOnTask(item.id, 'cancel')
+                  }}
+                  title="Cancel"
+                  color="#C0392B"
+                />
+              </View>
+              }
+              {item.status === 'assigned' &&
+              <View style={[t.w1_2, t.pL1]}>
+                <Button
+                  onPress={() => {
+                    props.takeActionOnTask(item.id, 'complete')
+                  }}
+                  title="Mark as Fulfilled"
+                />
+              </View>
+              }
             </View>
-            }
-            {item.status === 'assigned' &&
-            <View style={[t.w1_2, t.pL1]}>
-              <Button
-                onPress={() => {
-                  props.takeActionOnTask(item.id, 'complete')
-                }}
-                title="Mark as Fulfilled"
-              />
-            </View>
-            }
-          </View>
-        </Item>}
-        keyExtractor={item => item.id}
-      />
+          </Item>}
+          keyExtractor={item => item.id}
+          ListEmptyComponent={NoDataRenderer}
+        />
     </SafeAreaView>
   );
 }
@@ -55,8 +75,9 @@ function CreatedTasks(props) {
 const mapStateToProps = (state) => {
   return {
     createdTasks: state.apisResp.createdTasks,
-    actionTakenOnTask: state.apisResp.actionTakenOnTask
+    actionTakenOnTask: state.apisResp.actionTakenOnTask,
+    task: state.createTask.task
   }
 };
 
-export default connect(mapStateToProps, {getCreatedTasks, takeActionOnTask})(CreatedTasks);
+export default connect(mapStateToProps, { getCreatedTasks, takeActionOnTask })(CreatedTasks);

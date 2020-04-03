@@ -1,5 +1,7 @@
 import * as firebase from 'firebase';
 
-export const logout = () => {
+const logout = () => {
     return firebase.auth().signOut();
 };
+
+export default logout;

@@ -1,5 +1,7 @@
 import Crud from "./crud";
-import {BASE_URL} from '../constants/Environments';
+import {
+  BASE_URL
+} from '../constants/Environments';
 
 export default class Apis {
 
@@ -13,6 +15,21 @@ export default class Apis {
       phone,
       name,
       pincode
+    }
+    return this.crud.postCall(url, data);
+  }
+
+  getCategories() {
+    const url = `${BASE_URL}/categories`;
+    return this.crud.getCall(url);
+  }
+
+  createTask(task, address, categories) {
+    const url = `${BASE_URL}/tasks`;
+    const data = {
+      task,
+      address,
+      categories
     }
     return this.crud.postCall(url, data);
   }
