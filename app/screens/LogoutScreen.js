@@ -10,14 +10,16 @@ const LogoutScreen = () => {
             firebase.auth().signOut(),
             AsyncStorage.clear()
         ]).then(() => {
-            navigation.navigate(LOGIN);
-            return;
+          navigation.reset({
+            index: 0,
+            routes: [{name: LOGIN}],
+          });
         }).catch((error) => {
             console.error('Error while logging out', error);
             navigation.navigate(VOLUNTEER_TASKS);
             return;
         });
-        return ( 
+  return (
                 <View>
                 </View>
             );
