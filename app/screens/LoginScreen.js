@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ScrollView } from 'react-native';
 import { Input, Button, Card } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
@@ -10,6 +10,7 @@ import { REGISTER_USER } from '../constants/Routes';
 const LoginScreen = () => {
   const navigation = useNavigation();
   const country = '+91';
+  const [showLoading, setShowLoading] = useState(false);
   const [phone, setPhone] = useState('');
   const [phoneError, setPhoneError] = useState('')
   const [smsCode, setSmsCode] = useState('');
@@ -17,8 +18,10 @@ const LoginScreen = () => {
 
   const handleSendSMS = async () => {
     if (validatePhone()) {
+      setShowLoading(true);
       signInWithPhoneNumber(`${country}${phone}`).then(confirmation => {
-          setConfirmSMSCode(() => confirmation);
+        setShowLoading(false);
+        setConfirmSMSCode(() => confirmation);
       });
     }
   };
@@ -37,8 +40,14 @@ const LoginScreen = () => {
     if (!confirmSMSCode || smsCode === '') {
       return;
     }
+    setShowLoading(true);
     confirmSMSCode(smsCode);
+    setShowLoading(false);
   };
+
+  useEffect(() => {
+    handleUser(firebase.auth().currentUser);
+  }, [firebase.auth().currentUser])
 
   const handleUser = (user) => {
     if (user && !user.isAnonymous) {
@@ -51,10 +60,6 @@ const LoginScreen = () => {
   if (firebase.auth().currentUser && !firebase.auth().currentUser.isAnonymous) {
     return handleUser(firebase.auth().currentUser);
   }
-
-  firebase.auth().onAuthStateChanged(user => {
-    return handleUser(user);
-  });
 
   if (!confirmSMSCode)
     return (
@@ -71,6 +76,7 @@ const LoginScreen = () => {
         <Button
           onPress={handleSendSMS}
           title="Next"
+          loading={showLoading}
         />
       </ScrollView>
     );
@@ -85,6 +91,7 @@ const LoginScreen = () => {
         />
         <Button style={{ padding: 20 }}
           onPress={handleConfirmSMSCode}
+          loading={showLoading}
           title="Confirm SMS code"
         />
       </ScrollView>

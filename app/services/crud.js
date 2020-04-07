@@ -20,6 +20,7 @@ export default class Crud {
 
   getCall = async (url) => {
     const headers = await this.getHeaders();
+    console.debug('crud', {method:'get', url, headers});
     const result = await fetch(url, {
       headers
     });
@@ -28,6 +29,7 @@ export default class Crud {
 
   patchCall = async (url, data) => {
     const headers = await this.getHeaders();
+    console.debug('crud', {method:'patch', url, headers, data});
     const result = await fetch(url, {
       method: 'PATCH',
       data,
@@ -38,6 +40,7 @@ export default class Crud {
 
   postCall = async (url, body) => {
     const headers = await this.getHeaders();
+    console.debug('crud', {method:'post', url, headers, body});
     const result = await fetch(url, {
       method: 'POST',
       body: JSON.stringify(body),

@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 import { getAssignedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
 import NoDataRenderer from "../components/NoDataRenderer";
+import ListRenderer from '../components/ListRenderer';
 
 function AssignedTasks(props) {
   const [refreshing, setRefreshing] = useState(false);
@@ -27,10 +28,11 @@ function AssignedTasks(props) {
   }
 
   const { assignedTasks } = props;
-  const {tasks} = assignedTasks || {tasks: []};
+  const { tasks } = assignedTasks || { tasks: [] };
 
   return (
-    <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+    <SafeAreaView style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+      <ListRenderer listLength={(tasks || []).length}>
         <FlatList
           refreshControl={
             <RefreshControl
@@ -39,10 +41,11 @@ function AssignedTasks(props) {
             />
           }
           data={tasks}
-          renderItem={({item}) => <Item details={item} showContact={true} isCreator={false}/>}
+          renderItem={({ item }) => <Item details={item} showContact={true} isCreator={false} />}
           keyExtractor={item => item.id}
           ListEmptyComponent={NoDataRenderer}
         />
+      </ListRenderer>
     </SafeAreaView>
   );
 }

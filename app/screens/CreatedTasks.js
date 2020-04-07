@@ -5,6 +5,7 @@ import { getCreatedTasks, takeActionOnTask } from "../redux/actions/Actions";
 import Item from "../components/TaskItem";
 import { t } from 'react-native-tailwindcss';
 import NoDataRenderer from "../components/NoDataRenderer";
+import ListRenderer from "../components/ListRenderer";
 
 function CreatedTasks(props) {
   const [refreshing, setRefreshing] = useState(false);
@@ -31,7 +32,8 @@ function CreatedTasks(props) {
   const { tasks } = createdTasks || {};
 
   return (
-    <SafeAreaView style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+    <SafeAreaView style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>
+      <ListRenderer listLength={(tasks || []).length}>
         <FlatList
           refreshControl={
             <RefreshControl
@@ -40,34 +42,35 @@ function CreatedTasks(props) {
             />
           }
           data={tasks}
-          renderItem={({item}) => <Item details={item} showContact={true} isCreator={true}>
+          renderItem={({ item }) => <Item details={item} showContact={true} isCreator={true}>
             <View style={[t.flex, t.flexRow]}>
               {!['cancelled', 'completed'].includes(item.status) &&
-              <View style={[t.w1_2, t.pR1]}>
-                <Button
-                  onPress={() => {
-                    props.takeActionOnTask(item.id, 'cancel')
-                  }}
-                  title="Cancel"
-                  color="#C0392B"
-                />
-              </View>
+                <View style={[t.w1_2, t.pR1]}>
+                  <Button
+                    onPress={() => {
+                      props.takeActionOnTask(item.id, 'cancel')
+                    }}
+                    title="Cancel"
+                    color="#C0392B"
+                  />
+                </View>
               }
               {item.status === 'assigned' &&
-              <View style={[t.w1_2, t.pL1]}>
-                <Button
-                  onPress={() => {
-                    props.takeActionOnTask(item.id, 'complete')
-                  }}
-                  title="Mark as Fulfilled"
-                />
-              </View>
+                <View style={[t.w1_2, t.pL1]}>
+                  <Button
+                    onPress={() => {
+                      props.takeActionOnTask(item.id, 'complete')
+                    }}
+                    title="Mark as Fulfilled"
+                  />
+                </View>
               }
             </View>
           </Item>}
           keyExtractor={item => item.id}
           ListEmptyComponent={NoDataRenderer}
         />
+      </ListRenderer>
     </SafeAreaView>
   );
 }

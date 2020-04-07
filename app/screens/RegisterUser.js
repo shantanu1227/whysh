@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { ScrollView, AsyncStorage } from "react-native";
-import { Input, Button, Card } from 'react-native-elements';
+import { ScrollView, AsyncStorage, Text } from "react-native";
+import { Input, Button } from 'react-native-elements';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux'
-import {registerUser, savePincode} from '../redux/actions/Actions';
-import { VOLUNTEER_TASKS } from '../constants/Routes';
+import { registerUser, savePincode, loadAuthentication } from '../redux/actions/Actions';
 import { USER_PINCODE_KEY } from '../constants/Storage';
+import {LOGIN, VOLUNTEER_TASKS} from '../constants/Routes';
 
 
 const RegisterUser = (props) => {
@@ -15,24 +15,35 @@ const RegisterUser = (props) => {
     const [pincodeError, setPincodeError] = useState('');
     const [showLoading, setShowLoading] = useState(false);
 
-    useEffect(() => {
+    _setUser = () => {
         setShowLoading(false);
-        if (props.userRegistered && props.userRegistered.success) {
-          props.savePincode(pincode);
+        if (pincode && pincode !== '' && props.userRegistered && props.userRegistered.success) {
             Promise.all([
-                AsyncStorage.setItem(USER_PINCODE_KEY, pincode),
                 firebase.auth().currentUser.updateProfile({
                     displayName: name
-                })
+                }),                
+                AsyncStorage.setItem(USER_PINCODE_KEY, pincode),
             ]).then(() => {
-
-                props.navigation.navigate(VOLUNTEER_TASKS);
+                props.loadAuthentication();
+                return;
             }).catch((error) => {
                 console.error('Error Registering user', error);
                 alert(`Unable to register. ${error.message}`);
             });
         }
+    }
+
+    useEffect(() => {
+        _setUser();
     }, [props.userRegistered]);
+
+    useEffect(() => {
+        if (props.address && props.address !== null ) {
+            props.loadAuthentication();
+            return;
+        }
+    }, [props.address]);
+
 
     const validatePincode = () => {
         if (pincode.trim().length == 6 && parseInt(pincode) !== NaN && parseInt(pincode) > 0) {
@@ -67,6 +78,11 @@ const RegisterUser = (props) => {
         }
     };
 
+    if (firebase.auth().currentUser === null) {
+        props.navigation.reset({index: 0, routes: [{name: LOGIN}]});
+        return (<Text>Register</Text>);
+    }
+
     return (
         <ScrollView style={{ marginTop: 20, padding: 20 }}>
             <Input
@@ -86,7 +102,7 @@ const RegisterUser = (props) => {
                 keyboardType="numeric"
                 placeholder="Pincode"
             />
-            <Button buttonStyle={{ margin: 40}}
+            <Button buttonStyle={{ margin: 40 }}
                 title="Register"
                 loading={showLoading}
                 onPress={createUser} />
@@ -96,8 +112,9 @@ const RegisterUser = (props) => {
 
 const mapStateToProps = (state) => {
     return {
-        userRegistered: state.apisResp.registerUserTask
+        userRegistered: state.apisResp.registerUserTask,
+        address: state.authentication.address
     }
 };
 
-export default connect(mapStateToProps, {registerUser, savePincode})(RegisterUser);
+export default connect(mapStateToProps, { registerUser, savePincode, loadAuthentication })(RegisterUser);
