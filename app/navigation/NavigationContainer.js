@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, Text, AsyncStorage } from 'react-native';
+import { View, ActivityIndicator, Text } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { connect } from 'react-redux';
@@ -8,13 +8,8 @@ import screenOptions from "../styles/Header";
 import { VOLUNTEER_TASKS, LOGIN, routeNames } from '../constants/Routes';
 import SideNavigation from './SideNavigation';
 import useLinking from './useLinking';
-import { createAddress, loadAuthentication } from '../redux/actions/Actions';
-import * as storageKey from '../constants/Storage';
+import { loadAuthentication } from '../redux/actions/Actions';
 import * as firebase from 'firebase';
-
-const getHeaderTitle = (route, suffix = '') => {
-    return (routeNames[route].title || 'WHYSH') + suffix;
-}
 
 const Stack = createStackNavigator();
 

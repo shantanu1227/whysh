@@ -1,5 +1,5 @@
 import React, { Component, } from 'react';
-import { AsyncStorage, FlatList, View, ActivityIndicator, Alert } from 'react-native';
+import { AsyncStorage, FlatList, View, ActivityIndicator, Alert, Text } from 'react-native';
 import { connect } from 'react-redux';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -103,6 +103,7 @@ class CreateTaskComponent extends Component {
             checkBox={{ checked: this.state.checked.includes(item), onPress: () => this.handleCheckboxPress(item) }}
             onPress={() => this.handleCheckboxPress(item)}
             title={item.name.toUpperCase()}
+            style={{marginHorizontal: 15}}
         />
     )
 
@@ -124,7 +125,10 @@ class CreateTaskComponent extends Component {
         }
         if (categories.length > 0) {
             return (
-                <FlatList
+                <FlatList style={{marginVertical: 5}}
+                    ListHeaderComponent={
+                        <Card title="Select Category"/>
+                    }
                     keyExtractor={this.keyExtractor}
                     data={categories}
                     extraData={this.state}
@@ -174,7 +178,7 @@ class CreateTaskComponent extends Component {
 
                             </Card>
                             <Card containerStyle={{ marginTop: 0 }} >
-                                <Button title="Create Task" onPress={this.handleTaskCreation}></Button>
+                                <Button loading={taskLoading} title="Create Task" onPress={this.handleTaskCreation}></Button>
                             </Card>
                         </View>
                     }

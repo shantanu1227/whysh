@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { Entypo } from '@expo/vector-icons';
+import { DrawerActions } from '@react-navigation/native';
+import { Button } from 'react-native-elements';
 import LoginScreen from "../screens/LoginScreen";
 import LogoutScreen from '../screens/LogoutScreen';
 import CreateTaskScreen from '../screens/CreateTaskScreen';
@@ -15,13 +18,31 @@ import RegisterUser from "../screens/RegisterUser";
 const Drawer = createDrawerNavigator();
 
 const SideNavigation = (props) => {
-  const {address} = props;
-  const {pincode} = address || {};
+  const { address } = props;
+  const { pincode } = address || {};
   const [isLoggedIn, setIsLoggedIn] = useState(props.isLoggedIn);
-  props.navigation.setOptions({ headerTitle: getHeaderTitle(props.route, LOGIN, VOLUNTEER_TASKS, ` - In ${pincode}`) });
+  const [navigationIcon, setNavigationIcon] = useState('menu');
+  const navigationButtonClick = () => {
+    if (navigationIcon === 'menu') {
+      props.navigation.dispatch(DrawerActions.openDrawer());
+      setNavigationIcon('arrow-left');
+    } else {
+      props.navigation.dispatch(DrawerActions.closeDrawer());
+      setNavigationIcon('menu');
+    }
+  }
+  const headerLeft = () => (
+    <Button title="" onPress={navigationButtonClick} type="clear" icon={<Entypo
+      name={navigationIcon}
+      size={30}
+      color="white"
+    />
+    }
+    />
+  )
+  props.navigation.setOptions({ headerLeft, headerTitle: getHeaderTitle(props.route, LOGIN, VOLUNTEER_TASKS, ` - In ${pincode}`) });
 
-
-  useEffect(()=> {
+  useEffect(() => {
     if (pincode && pincode !== null) {
       setIsLoggedIn(true);
     } else {
@@ -66,7 +87,7 @@ const SideNavigation = (props) => {
   );
 }
 
-function getHeaderTitle(route, INITIAL_ROUTE_NAME, suffixCondition=null, suffix=null) {
+function getHeaderTitle(route, INITIAL_ROUTE_NAME, suffixCondition = null, suffix = null) {
   const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
   if (suffixCondition !== null && routeName === suffixCondition) {
     return `${routeNames[routeName].title}${suffix}`;
