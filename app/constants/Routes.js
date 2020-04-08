@@ -1,7 +1,7 @@
 export const HOME = 'Home';
 export const LOGIN = 'Login';
 export const LOGOUT = 'Logout';
-export const VOLUNTEER_TASKS = 'volunteerTasks';
+export const VOLUNTEER_TASKS = 'VolunteerTasks';
 export const CREATED_TASKS = 'createdTasks';
 export const ASSIGNED_TASKS = 'assignedTasks';
 export const REGISTER_USER = 'registerUser';

@@ -1,4 +1,5 @@
-import { Button, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, View, Button } from "react-native";
+import {Card, Text, ListItem} from 'react-native-elements';
 import { Linking } from 'expo';
 import t from "react-native-tailwindcss/tailwind";
 import { colors } from "../styles/Common";
@@ -35,16 +36,16 @@ export default function Item({ details, children, showContact, isCreator }) {
       if (details.assignedTo !== null) {
         contactDetails = (
           <View>
-            <Text>Assigned To - {details.assignedTo.name}</Text>
-            <Text onPress={() => Linking.openURL(`tel:${details.assignedTo.phone}`)}>{details.assignedTo.phone}</Text>
+            <ListItem key={1} title={`Assigned To - ${details.assignedTo.name}`}/>
+            <ListItem key={2} title={<Button style="clear" title={details.assignedTo.phone} onPress={() => Linking.openURL(`tel:${details.assignedTo.phone}`)}/>}/>
           </View>
         )
       }
     } else {
       contactDetails = (
           <View>
-            <Text>Created By - {details.createdBy.name}</Text>
-            <Text onPress={() => Linking.openURL(`tel:${details.createdBy.phone}`)}>{details.createdBy.phone}</Text>
+            <ListItem key={1} title={`Created By - ${details.createdBy.name}`}/>
+            <ListItem key={2} title={<Button style="clear" title={details.createdBy.phone} onPress={() => Linking.openURL(`tel:${details.createdBy.phone}`)}/>}/>
           </View>
         )
     }
@@ -60,7 +61,7 @@ export default function Item({ details, children, showContact, isCreator }) {
       <View style={[styles.container, t.flex, t.flexRow]}>
         <View style={[t.w3_4]}>
           <Text style={[colors.light]}>#{details.id}</Text>
-          <Text>{details.task}</Text>
+          <Text h4>{details.task}</Text>
         </View>
         <Text style={[statuses.common, statuses[details.status], t.w1_4]}>{details.status}</Text>
       </View>
