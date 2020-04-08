@@ -10,6 +10,8 @@ function VolunteerTasks(props) {
   const [refreshing, setRefreshing] = useState(false);
   const {address} = props || {};
   const {pincode} = address || {};
+  const { pendingTasks } = props;
+  const { tasks } = pendingTasks || {};
 
   const _handleRefresh = () => {
     setRefreshing(true);
@@ -21,18 +23,7 @@ function VolunteerTasks(props) {
 
   useEffect(() => {
     _handleRefresh();
-  }, [pincode]);
-
-  useEffect(() => {
-    _handleRefresh();
   }, [pincode, props.actionTakenOnTask]);
-
-  useEffect(() => {
-    _handleRefresh();
-  }, [props.actionTakenOnTask]);
-
-  const { pendingTasks } = props;
-  const { tasks } = pendingTasks || {};
 
   return (
     <SafeAreaView style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>

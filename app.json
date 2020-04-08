@@ -10,8 +10,7 @@
     "scheme": "whysh",
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "ios": {
       "bundleIdentifier": "com.whysh.community",
@@ -20,6 +19,8 @@
     "android": {
       "package": "com.whysh.community",
       "googleServicesFile": "./google-services.json"
-    }
+    },
+    "description": "",
+    "githubUrl": "https://github.com/shantanu1227/whysh"
   }
 }

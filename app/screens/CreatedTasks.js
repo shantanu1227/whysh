@@ -9,6 +9,8 @@ import ListRenderer from "../components/ListRenderer";
 
 function CreatedTasks(props) {
   const [refreshing, setRefreshing] = useState(false);
+  const { createdTasks } = props;
+  const { tasks } = createdTasks || {};
 
   const _handleRefresh = () => {
     setRefreshing(true);
@@ -18,18 +20,7 @@ function CreatedTasks(props) {
 
   useEffect(() => {
     props.getCreatedTasks();
-  }, []);
-
-  useEffect(() => {
-    props.getCreatedTasks();
-  }, [props.actionTakenOnTask]);
-
-  useEffect(() => {
-    props.getCreatedTasks();
-  }, [props.task]);
-
-  const { createdTasks } = props;
-  const { tasks } = createdTasks || {};
+  }, [props.task, props.actionTakenOnTask]);
 
   return (
     <SafeAreaView style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}>

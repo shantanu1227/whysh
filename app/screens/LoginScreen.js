@@ -3,8 +3,8 @@ import { ScrollView } from 'react-native';
 import { Input, Button, Card } from 'react-native-elements';
 import { useNavigation } from '@react-navigation/native';
 import * as firebase from 'firebase';
-import { signInWithPhoneNumber } from '../domain/phoneAuthentication';
 import { REGISTER_USER } from '../constants/Routes';
+import { FirebaseRecaptchaVerifierModal, FirebaseAuthApplicationVerifier } from 'expo-firebase-recaptcha';
 
 
 const LoginScreen = () => {
@@ -12,17 +12,23 @@ const LoginScreen = () => {
   const country = '+91';
   const [showLoading, setShowLoading] = useState(false);
   const [phone, setPhone] = useState('');
-  const [phoneError, setPhoneError] = useState('')
   const [smsCode, setSmsCode] = useState('');
-  const [confirmSMSCode, setConfirmSMSCode] = useState();
+  const [verificationId, setVerificationId] = useState('');
+  const [phoneError, setPhoneError] = useState('')
+  let recaptchaVerifier = FirebaseAuthApplicationVerifier;
 
   const handleSendSMS = async () => {
     if (validatePhone()) {
       setShowLoading(true);
-      signInWithPhoneNumber(`${country}${phone}`).then(confirmation => {
+      const phoneProvider = new firebase.auth.PhoneAuthProvider();
+      try {
+        const verificationIdObj = await phoneProvider.verifyPhoneNumber(`${country}${phone}`, recaptchaVerifier);
+        setVerificationId(verificationIdObj);
+      } catch (ex) {
+        console.warn(ex);
+      } finally {
         setShowLoading(false);
-        setConfirmSMSCode(() => confirmation);
-      });
+      }
     }
   };
 
@@ -36,18 +42,21 @@ const LoginScreen = () => {
     }
   }
 
-  const handleConfirmSMSCode = () => {
-    if (!confirmSMSCode || smsCode === '') {
+  const handleConfirmSMSCode = async () => {
+    if (smsCode === '') {
       return;
     }
     setShowLoading(true);
-    confirmSMSCode(smsCode);
-    setShowLoading(false);
+    const credential = firebase.auth.PhoneAuthProvider.credential(verificationId, smsCode);
+    try {
+      const authResult = await firebase.auth().signInWithCredential(credential);
+      setShowLoading(false);
+      handleUser(firebase.auth().currentUser);
+    } catch (ex) {
+      console.warn(ex);
+      setShowLoading(false);
+    }
   };
-
-  useEffect(() => {
-    handleUser(firebase.auth().currentUser);
-  }, [firebase.auth().currentUser])
 
   const handleUser = (user) => {
     if (user && !user.isAnonymous) {
@@ -57,13 +66,14 @@ const LoginScreen = () => {
     return <></>;
   }
 
-  if (firebase.auth().currentUser && !firebase.auth().currentUser.isAnonymous) {
-    return handleUser(firebase.auth().currentUser);
-  }
-
-  if (!confirmSMSCode)
+  if (!verificationId)
     return (
       <ScrollView style={{ padding: 20, marginTop: 20 }} >
+        <FirebaseRecaptchaVerifierModal
+          ref={ref => recaptchaVerifier = ref}
+          title='Human?  '
+          cancelLabel='Cancel '
+          firebaseConfig={firebase.app().options} />
         <Input
           value={phone}
           onChangeText={setPhone}
