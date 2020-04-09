@@ -1,5 +1,5 @@
 import React, { Component, } from 'react';
-import { AsyncStorage, FlatList, View, ActivityIndicator, Alert } from 'react-native';
+import { AsyncStorage, FlatList, View, ActivityIndicator, Alert, Text } from 'react-native';
 import { connect } from 'react-redux';
 import * as Location from 'expo-location';
 import * as Permissions from 'expo-permissions';
@@ -21,7 +21,7 @@ class CreateTaskComponent extends Component {
             street2: '',
             city: '',
             country: 'India',
-            location:{
+            location: {
                 latitude: null,
                 longitude: null
             }
@@ -41,20 +41,23 @@ class CreateTaskComponent extends Component {
     }
 
     componentDidMount() {
+        if(this.props.pincode) {
+            this.handleAddress(this.props.pincode, 'pincode');
+        }
         this.props.dispatch(getCategories());
         this._getLocationAsync();
         this._getAddressData();
     }
 
-  componentDidUpdate(prevProps) {
-    const {task} = this.props;
-    if (task && task !== prevProps.task) {
-      this.setState({
-        taskDetail: '',
-        checked: []
-      });
+    componentDidUpdate(prevProps) {
+        const { task } = this.props;
+        if (task && task !== prevProps.task) {
+            this.setState({
+                taskDetail: '',
+                checked: []
+            });
+        }
     }
-  }
 
     handleCheckboxPress = item => {
         const { checked } = this.state;
@@ -77,11 +80,11 @@ class CreateTaskComponent extends Component {
             Alert.alert("Location is not available.");
             return;
         }
-        if(this.state.checked.length == 0){
+        if (this.state.checked.length == 0) {
             Alert.alert("Please select category.");
             return;
         }
-        if(this.state.taskDetail.trim().length == 0) {
+        if (this.state.taskDetail.trim().length == 0) {
             Alert.alert("Please enter description.");
             return;
         }
@@ -89,23 +92,23 @@ class CreateTaskComponent extends Component {
         this.props.dispatch(createTask(this.state.taskDetail, this.state.address, this.state.checked));
     }
 
-    handleTaskCreationSuccess= () => {
-        console.log(this.state);
+    handleTaskCreationSuccess = () => {
         this.state.navigation.navigate(CREATED_TASKS);
         return;
     }
 
     keyExtractor = (item, index) => index.toString();
     renderItem = ({ item }) => (
-      <ListItem
+        <ListItem
             checkBox={{ checked: this.state.checked.includes(item), onPress: () => this.handleCheckboxPress(item) }}
             onPress={() => this.handleCheckboxPress(item)}
             title={item.name.toUpperCase()}
+            style={{marginHorizontal: 15}}
         />
     )
 
     render() {
-      const {categoriesError, categoriesLoading, categories, taskError, taskLoading} = this.props;
+        const { categoriesError, categoriesLoading, categories, taskError, taskLoading } = this.props;
         if (categoriesError || taskError) {
             const error = categoriesError || taskError;
             if (error) {
@@ -113,7 +116,7 @@ class CreateTaskComponent extends Component {
                 return Alert.alert(error.message);
             }
         }
-      if (categoriesLoading || taskLoading) {
+        if (categoriesLoading || taskLoading) {
             return (
                 <View style={{ flex: 1, flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
                     <ActivityIndicator size={'large'} />
@@ -122,7 +125,10 @@ class CreateTaskComponent extends Component {
         }
         if (categories.length > 0) {
             return (
-                <FlatList
+                <FlatList style={{marginVertical: 5}}
+                    ListHeaderComponent={
+                        <Card title="Select Category"/>
+                    }
                     keyExtractor={this.keyExtractor}
                     data={categories}
                     extraData={this.state}
@@ -172,7 +178,7 @@ class CreateTaskComponent extends Component {
 
                             </Card>
                             <Card containerStyle={{ marginTop: 0 }} >
-                                <Button title="Create Task" onPress={this.handleTaskCreation}></Button>
+                                <Button loading={taskLoading} title="Create Task" onPress={this.handleTaskCreation}></Button>
                             </Card>
                         </View>
                     }
@@ -222,7 +228,7 @@ class CreateTaskComponent extends Component {
                 default:
                     addressKey = null;
             }
-            if(value && addressKey) {
+            if (value && addressKey) {
                 this.handleAddress(value, addressKey);
             }
         });
@@ -235,7 +241,8 @@ const mapStateToProps = state => ({
     categoriesError: state.categories.error,
     task: state.createTask.task,
     taskError: state.createTask.error,
-    taskLoading: state.createTask.loading
+    taskLoading: state.createTask.loading,
+    pincode: state.apisResp.pincode
 });
 
 export default connect(mapStateToProps)(CreateTaskComponent);

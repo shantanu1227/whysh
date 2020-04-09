@@ -1,92 +1,102 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import HomeScreen from "../screens/HomeScreen";
+import { Entypo } from '@expo/vector-icons';
+import { DrawerActions } from '@react-navigation/native';
+import { Button } from 'react-native-elements';
 import LoginScreen from "../screens/LoginScreen";
 import LogoutScreen from '../screens/LogoutScreen';
 import CreateTaskScreen from '../screens/CreateTaskScreen';
 
-import {
-  ASSIGNED_TASKS,
-  CREATED_TASKS,
-  HOME,
-  LOGIN,
-  routeNames,
-  VOLUNTEER_TASKS,
-  LOGOUT,
-  CREATE_TASK,
-  REGISTER_USER
-} from "../constants/Routes";
+import { ASSIGNED_TASKS, CREATED_TASKS, HOME, LOGIN, routeNames, VOLUNTEER_TASKS, LOGOUT, CREATE_TASK, REGISTER_USER } from "../constants/Routes";
 import CustomIcon from "../components/TabBarIcon";
 import VolunteerTasks from "../screens/VolunteerTasks";
 import AssignedTasks from "../screens/AssignedTasks";
 import CreatedTasks from "../screens/CreatedTasks";
-import * as firebase from 'firebase';
-import logout from '../domain/logout';
-import screenOptions from "../styles/Header";
 import RegisterUser from "../screens/RegisterUser";
 
 const Drawer = createDrawerNavigator();
-const INITIAL_ROUTE_NAME = HOME;
 
-export default function BottomTabNavigator({ navigation, route }) {
-  const [isAuthenticated, setIsAuthenticated] = useState();
-  navigation.setOptions({ headerTitle: getHeaderTitle(route) });
-
-  firebase.auth().onAuthStateChanged(user => {
-    if (user && !user.isAnonymous && user.displayName !== null) {
-      setIsAuthenticated(true);
+const SideNavigation = (props) => {
+  const { address } = props;
+  const { pincode } = address || {};
+  const [isLoggedIn, setIsLoggedIn] = useState(props.isLoggedIn);
+  const [navigationIcon, setNavigationIcon] = useState('menu');
+  const navigationButtonClick = () => {
+    if (navigationIcon === 'menu') {
+      props.navigation.dispatch(DrawerActions.openDrawer());
+      setNavigationIcon('arrow-left');
+    } else {
+      props.navigation.dispatch(DrawerActions.closeDrawer());
+      setNavigationIcon('menu');
     }
-  });
-
-  if (isAuthenticated) {
-    return (
-      <Drawer.Navigator
-        drawerType='slide'
-        screenOptions={screenOptions}
-        initialRouteName={INITIAL_ROUTE_NAME}
-        onItemPress={
-          (route) => {
-            if (route.route.routeName !== LOGOUT) {
-              onItemPress(route);
-              return;
-            }
-            logout();
-          }
-        }
-      >
-        <Drawer.Screen
-          name={VOLUNTEER_TASKS}
-          component={VolunteerTasks}
-          options={{ title: routeNames[VOLUNTEER_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
-        />
-        <Drawer.Screen name={CREATE_TASK}
-          component={CreateTaskScreen}
-          options={{ title: routeNames[CREATE_TASK].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
-        />
-        <Drawer.Screen name={CREATED_TASKS} component={CreatedTasks}
-          options={{ title: routeNames[CREATED_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
-        />
-        <Drawer.Screen name={ASSIGNED_TASKS}
-          component={AssignedTasks}
-          options={{ title: routeNames[ASSIGNED_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
-        />
-        <Drawer.Screen name={LOGOUT}
-          component={LogoutScreen}
-          options={{ title: routeNames[LOGOUT].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-contact" /> }}
-        />
-      </Drawer.Navigator >
-    );
-  } else {
-    return (
-      <Drawer.Navigator drawerType='slide' initialRouteName={INITIAL_ROUTE_NAME} >
-        <Drawer.Screen name={HOME} component={HomeScreen} options={{ title: routeNames[HOME].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="md-home" /> }} />
-        <Drawer.Screen name={LOGIN} component={LoginScreen} options={{ title: routeNames[LOGIN].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-contact" /> }} />
-      </Drawer.Navigator >
-    );
   }
+  const headerLeft = () => (
+    <Button title="" onPress={navigationButtonClick} type="clear" icon={<Entypo
+      name={navigationIcon}
+      size={30}
+      color="white"
+    />
+    }
+    />
+  )
+  props.navigation.setOptions({ headerLeft, headerTitle: getHeaderTitle(props.route, LOGIN, VOLUNTEER_TASKS, ` - In ${pincode}`) });
+
+  useEffect(() => {
+    if (pincode && pincode !== null) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [pincode])
+
+  return (
+    <Drawer.Navigator drawerType='slide'>
+      {isLoggedIn ? (
+        <>
+          <Drawer.Screen
+            name={VOLUNTEER_TASKS}
+            component={VolunteerTasks}
+            options={{ title: routeNames[VOLUNTEER_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
+          />
+          <Drawer.Screen name={CREATE_TASK}
+            component={CreateTaskScreen}
+            options={{ title: routeNames[CREATE_TASK].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
+          />
+          <Drawer.Screen name={CREATED_TASKS} component={CreatedTasks}
+            options={{ title: routeNames[CREATED_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
+          />
+          <Drawer.Screen name={ASSIGNED_TASKS}
+            component={AssignedTasks}
+            options={{ title: routeNames[ASSIGNED_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
+          />
+          <Drawer.Screen name={LOGOUT}
+            component={LogoutScreen}
+            options={{ title: routeNames[LOGOUT].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-contact" /> }}
+          />
+        </>
+      ) : (
+          <>
+            <Drawer.Screen name={LOGIN} component={LoginScreen} options={{ title: routeNames[LOGIN].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-contact" /> }} />
+            <Drawer.Screen name={REGISTER_USER} component={RegisterUser} options={{ title: routeNames[REGISTER_USER].title, drawerLabel: () => null, drawerIcon: () => null }} />
+          </>
+
+        )
+      }
+    </Drawer.Navigator >
+  );
 }
 
-function getHeaderTitle(route) {
+function getHeaderTitle(route, INITIAL_ROUTE_NAME, suffixCondition = null, suffix = null) {
   const routeName = route.state?.routes[route.state.index]?.name ?? INITIAL_ROUTE_NAME;
+  if (suffixCondition !== null && routeName === suffixCondition) {
+    return `${routeNames[routeName].title}${suffix}`;
+  }
   return routeNames[routeName].title;
 }
+
+const mapStateToProps = state => ({
+  address: state.authentication.address
+})
+
+export default connect(mapStateToProps)(SideNavigation);
