@@ -35,7 +35,8 @@ class LoginComponent extends Component {
     }
 
     validatePhone = () => {
-        if (this.state.phone.trim().length == 10 && parseInt(this.state.phone) !== NaN && parseInt(this.state.phone) >= 6 * 1000 * 1000 * 1000) {
+        const regex = /[6-9][0-9]{9}/;
+        if (this.state.phone.trim().length == 10 && parseInt(this.state.phone) !== NaN && regex.test(this.state.phone)) {
             this.setState({ phoneError: '' });
             return true;
         } else {
