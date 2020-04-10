@@ -23,19 +23,12 @@ const SideNavigation = (props) => {
   const { address } = props;
   const { pincode } = address || {};
   const [isLoggedIn, setIsLoggedIn] = useState(props.isLoggedIn);
-  const [navigationIcon, setNavigationIcon] = useState('menu');
   const navigationButtonClick = () => {
-    if (navigationIcon === 'menu') {
-      props.navigation.dispatch(DrawerActions.openDrawer());
-      setNavigationIcon('arrow-left');
-    } else {
-      props.navigation.dispatch(DrawerActions.closeDrawer());
-      setNavigationIcon('menu');
-    }
+    props.navigation.dispatch(DrawerActions.toggleDrawer());
   }
   const headerLeft = () => (
     <Button title="" onPress={navigationButtonClick} type="clear" icon={<Entypo
-      name={navigationIcon}
+      name="menu"
       size={30}
       color="white"
     />
