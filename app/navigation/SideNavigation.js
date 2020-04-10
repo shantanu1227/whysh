@@ -14,6 +14,8 @@ import VolunteerTasks from "../screens/VolunteerTasks";
 import AssignedTasks from "../screens/AssignedTasks";
 import CreatedTasks from "../screens/CreatedTasks";
 import RegisterUser from "../screens/RegisterUser";
+import {Text} from "react-native";
+import DrawerItem from "../components/DrawerItem";
 
 const Drawer = createDrawerNavigator();
 
@@ -48,7 +50,7 @@ const SideNavigation = (props) => {
     } else {
       setIsLoggedIn(false);
     }
-  }, [pincode])
+  }, [pincode]);
 
   return (
     <Drawer.Navigator drawerType='slide'>
@@ -57,22 +59,45 @@ const SideNavigation = (props) => {
           <Drawer.Screen
             name={VOLUNTEER_TASKS}
             component={VolunteerTasks}
-            options={{ title: routeNames[VOLUNTEER_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
+            options={{
+              title: routeNames[VOLUNTEER_TASKS].title,
+              drawerLabel: ({focused}) => <DrawerItem focused={focused} title={routeNames[VOLUNTEER_TASKS].title}/>,
+              drawerIcon: ({focused}) => < CustomIcon focused={focused} name="ios-list"/>
+            }}
           />
           <Drawer.Screen name={CREATE_TASK}
-            component={CreateTaskScreen}
-            options={{ title: routeNames[CREATE_TASK].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
+                         component={CreateTaskScreen}
+                         options={{
+                           title: routeNames[CREATE_TASK].title,
+                           drawerLabel: ({focused}) => <DrawerItem focused={focused}
+                                                                   title={routeNames[CREATE_TASK].title}/>,
+                           drawerIcon: ({focused}) => < CustomIcon focused={focused} name="ios-list"/>
+                         }}
           />
           <Drawer.Screen name={CREATED_TASKS} component={CreatedTasks}
-            options={{ title: routeNames[CREATED_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
+                         options={{
+                           title: routeNames[CREATED_TASKS].title,
+                           drawerLabel: ({focused}) => <DrawerItem focused={focused}
+                                                                   title={routeNames[CREATED_TASKS].title}/>,
+                           drawerIcon: ({focused}) => < CustomIcon focused={focused} name="ios-list"/>
+                         }}
           />
           <Drawer.Screen name={ASSIGNED_TASKS}
-            component={AssignedTasks}
-            options={{ title: routeNames[ASSIGNED_TASKS].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-list" /> }}
+                         component={AssignedTasks}
+                         options={{
+                           title: routeNames[ASSIGNED_TASKS].title,
+                           drawerLabel: ({focused}) => <DrawerItem focused={focused}
+                                                                   title={routeNames[ASSIGNED_TASKS].title}/>,
+                           drawerIcon: ({focused}) => < CustomIcon focused={focused} name="ios-list"/>
+                         }}
           />
           <Drawer.Screen name={LOGOUT}
-            component={LogoutScreen}
-            options={{ title: routeNames[LOGOUT].title, drawerIcon: ({ focused }) => < CustomIcon focused={focused} name="ios-contact" /> }}
+                         component={LogoutScreen}
+                         options={{
+                           title: routeNames[LOGOUT].title,
+                           drawerLabel: ({focused}) => <DrawerItem focused={focused} title={routeNames[LOGOUT].title}/>,
+                           drawerIcon: ({focused}) => < CustomIcon focused={focused} name="ios-contact"/>
+                         }}
           />
         </>
       ) : (

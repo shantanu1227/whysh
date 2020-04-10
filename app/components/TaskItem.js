@@ -59,11 +59,11 @@ export default function Item({ details, children, showContact, isCreator }) {
   return (
     <View style={styles.wrap}>
       <View style={[styles.container, t.flex, t.flexRow]}>
-        <View style={[t.w3_4]}>
+        <View style={[t.w3_5]}>
           <Text style={[colors.light]}>#{details.id}</Text>
           <Text h4>{details.task}</Text>
         </View>
-        <Text style={[statuses.common, statuses[details.status], t.w1_4]}>{details.status}</Text>
+        <Text style={[statuses.common, statuses[details.status], t.w2_5]}>{details.status}</Text>
       </View>
       <View style={styles.addressWrap}>
         <Text onPress={() => {
