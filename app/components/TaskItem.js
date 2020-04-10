@@ -1,3 +1,5 @@
+import React from "react";
+import Moment from 'moment';
 import { StyleSheet, View, Button } from "react-native";
 import {Card, Text, ListItem} from 'react-native-elements';
 import { Linking } from 'expo';
@@ -6,7 +8,6 @@ import { colors } from "../styles/Common";
 import { statuses } from "../styles/TaskStatuses";
 import { Entypo } from "@expo/vector-icons";
 import { getFormattedAddress } from "../methods/Common";
-import React from "react";
 
 export default function Item({ details, children, showContact, isCreator }) {
 
@@ -61,6 +62,7 @@ export default function Item({ details, children, showContact, isCreator }) {
       <View style={[styles.container, t.flex, t.flexRow]}>
         <View style={[t.w3_5]}>
           <Text style={[colors.light]}>#{details.id}</Text>
+          <Text style={[colors.light]}>Added on {Moment(details.createdAt).format('d MMM HH:mm')}</Text>
           <Text h4>{details.task}</Text>
         </View>
         <Text style={[statuses.common, statuses[details.status], t.w2_5]}>{details.status}</Text>

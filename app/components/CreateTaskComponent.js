@@ -1,4 +1,4 @@
-import React, { Component, } from 'react';
+import React, { Component } from 'react';
 import { AsyncStorage, FlatList, View, ActivityIndicator, Alert, Text } from 'react-native';
 import { connect } from 'react-redux';
 import * as Location from 'expo-location';

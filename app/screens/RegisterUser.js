@@ -100,7 +100,7 @@ const RegisterUser = (props) => {
                 errorMessage={pincodeError}
                 maxLength={6}
                 keyboardType="numeric"
-                placeholder="Pincode"
+                placeholder="Delivery Pincode"
             />
             <Button buttonStyle={{ margin: 40 }}
                 title="Register"
